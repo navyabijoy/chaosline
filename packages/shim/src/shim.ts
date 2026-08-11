@@ -1,6 +1,6 @@
 // stdio MCP passthrough. Wraps a real MCP stdio server as a child process and
 // forwards every JSON-RPC message transparently in both directions, except for
-// one fault hook: FAULTLINE_FAULT=timeout_after_commit on FAULTLINE_FAULT_TOOL
+// one fault hook: CHAOSLINE_FAULT=timeout_after_commit on CHAOSLINE_FAULT_TOOL
 // lets the call through to the child, records its result, and never forwards
 // the response to the real client — a lost-response hang, on purpose.
 //
@@ -8,7 +8,7 @@
 // No sessions, no initialize handshake to special-case — just messages.
 import { spawn } from "node:child_process";
 import { createInterface } from "node:readline";
-import { TraceWriter } from "@faultline/core";
+import { TraceWriter } from "@chaosline/core";
 
 interface PendingCall {
   tool: string;
@@ -17,9 +17,9 @@ interface PendingCall {
 }
 
 export function runShim(childCommand: string, childArgs: string[]): void {
-  const faultKind = process.env.FAULTLINE_FAULT;
-  const faultTool = process.env.FAULTLINE_FAULT_TOOL;
-  const tracePath = process.env.FAULTLINE_TRACE_PATH;
+  const faultKind = process.env.CHAOSLINE_FAULT;
+  const faultTool = process.env.CHAOSLINE_FAULT_TOOL;
+  const tracePath = process.env.CHAOSLINE_TRACE_PATH;
   const trace = tracePath ? new TraceWriter(tracePath) : undefined;
 
   const child = spawn(childCommand, childArgs, {

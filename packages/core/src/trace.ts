@@ -16,6 +16,7 @@ export type Block = unknown;
 export interface Usage {
   input_tokens?: number;
   output_tokens?: number;
+  cost_usd?: number;
 }
 
 export interface FaultRecord {
@@ -38,4 +39,11 @@ export type RunEvent =
     }
   | { t: number; kind: "world_mutation"; world: string; op: string; state: unknown }
   | { t: number; kind: "agent_output"; text: string }
-  | { t: number; kind: "agent_exit"; code: number; reason: string };
+  | { t: number; kind: "agent_exit"; code: number; reason: string }
+  | {
+      t: number;
+      kind: "budget_abort";
+      cumulativeCostUsd: number;
+      budgetUsd: number;
+      model: string;
+    };

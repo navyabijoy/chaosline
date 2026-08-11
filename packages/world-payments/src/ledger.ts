@@ -1,5 +1,5 @@
 // In-memory payments ledger. One process's worth of state — the MCP entrypoint
-// (./bin/mcp-server.ts) is what gives this a lifetime across a faultline run.
+// (./bin/mcp-server.ts) is what gives this a lifetime across a chaosline run.
 
 export interface LedgerEntry {
   refund_id: string;

@@ -8,14 +8,14 @@ import { z } from "zod";
 import { createRefund, getLedger } from "../ledger.ts";
 import { writeFileSync } from "node:fs";
 
-const ledgerSnapshotPath = process.env.FAULTLINE_LEDGER_PATH;
+const ledgerSnapshotPath = process.env.CHAOSLINE_LEDGER_PATH;
 
 function snapshotLedger() {
   if (!ledgerSnapshotPath) return;
   writeFileSync(ledgerSnapshotPath, JSON.stringify(getLedger(), null, 2));
 }
 
-const server = new McpServer({ name: "faultline-world-payments", version: "0.1.0" });
+const server = new McpServer({ name: "chaosline-world-payments", version: "0.1.0" });
 
 server.registerTool(
   "create_refund",

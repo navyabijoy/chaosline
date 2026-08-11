@@ -1,4 +1,4 @@
-import { runShim } from "@faultline/shim";
+import { runShim } from "@chaosline/shim";
 
 export function shimCommand(args: string[]): void {
   const sepIdx = args.indexOf("--");

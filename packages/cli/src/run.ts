@@ -1,9 +1,10 @@
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { TraceWriter, readTrace, type RunEvent } from "@faultline/core";
-import { noDuplicateSideEffect } from "@faultline/grader";
-import type { LedgerEntry } from "@faultline/world-payments";
+import { TraceWriter, readTrace, type RunEvent } from "@chaosline/core";
+import { costBounded, noDuplicateSideEffect, noFalseSuccessClaim } from "@chaosline/grader";
+import { startModelProxy } from "@chaosline/proxy-model";
+import type { LedgerEntry } from "@chaosline/world-payments";
 
 // Hardcoded for Phase 1 — one scenario. No YAML DSL yet, see docs/05-roadmap.md.
 interface ScenarioConfig {
@@ -19,6 +20,8 @@ const SCENARIOS: Record<string, ScenarioConfig> = {
 };
 
 const WALL_CLOCK_CAP_MS = 150_000;
+const DEFAULT_BUDGET_USD = 1.0;
+const DEFAULT_MODEL_UPSTREAM = "https://api.anthropic.com";
 
 export async function runCommand(args: string[]): Promise<void> {
   const scenarioIdx = args.indexOf("--scenario");
@@ -54,7 +57,7 @@ export async function runCommand(args: string[]): Promise<void> {
   const configPath = `${runDir}/mcp-config.json`;
 
   const worldBinPath = fileURLToPath(
-    import.meta.resolve("@faultline/world-payments/mcp-server")
+    import.meta.resolve("@chaosline/world-payments/mcp-server")
   );
   const cliBinPath = process.argv[1];
 
@@ -64,10 +67,10 @@ export async function runCommand(args: string[]): Promise<void> {
         command: "node",
         args: [cliBinPath, "shim", "--", "node", worldBinPath],
         env: {
-          FAULTLINE_FAULT: scenario.fault,
-          FAULTLINE_FAULT_TOOL: scenario.tool,
-          FAULTLINE_TRACE_PATH: tracePath,
-          FAULTLINE_LEDGER_PATH: ledgerPath,
+          CHAOSLINE_FAULT: scenario.fault,
+          CHAOSLINE_FAULT_TOOL: scenario.tool,
+          CHAOSLINE_TRACE_PATH: tracePath,
+          CHAOSLINE_LEDGER_PATH: ledgerPath,
         },
       },
     },
@@ -77,7 +80,21 @@ export async function runCommand(args: string[]): Promise<void> {
   console.log(`chaosline: scenario ${scenarioId}`);
   console.log(`chaosline: run dir ${runDir}`);
 
-  const agentEnv = { ...process.env, MCP_CONFIG: configPath };
+  const budgetUsd = Number(process.env.CHAOSLINE_BUDGET_USD ?? DEFAULT_BUDGET_USD);
+  const modelUpstream = process.env.CHAOSLINE_MODEL_UPSTREAM ?? DEFAULT_MODEL_UPSTREAM;
+  const modelProxy = await startModelProxy({ upstream: modelUpstream, budgetUsd, tracePath });
+  console.log(`chaosline: model proxy up on ${modelProxy.url} -> ${modelUpstream} (budget $${budgetUsd.toFixed(4)})`);
+
+  const agentEnv = {
+    ...process.env,
+    MCP_CONFIG: configPath,
+    // Same proxy serves both provider shapes (see packages/proxy-model/src/proxy.ts
+    // detectProvider) — set both base-URL env vars so an OpenAI-SDK-based agent
+    // under test is interceptable without the harness needing to know which
+    // provider it uses.
+    ANTHROPIC_BASE_URL: modelProxy.url,
+    OPENAI_BASE_URL: modelProxy.url,
+  };
 
   const exitCode = await new Promise<number>((resolve) => {
     const child = spawn(agentCmd, agentArgs, { env: agentEnv, stdio: "inherit" });
@@ -90,6 +107,8 @@ export async function runCommand(args: string[]): Promise<void> {
       resolve(code ?? 1);
     });
   });
+
+  await modelProxy.close();
 
   const trace: RunEvent[] = readTrace(tracePath);
   const exitEvent: RunEvent = {
@@ -107,12 +126,20 @@ export async function runCommand(args: string[]): Promise<void> {
   }
 
   const verdict = noDuplicateSideEffect(trace, ledgerSnapshot);
+  const honesty = noFalseSuccessClaim(trace, ledgerSnapshot.length >= 1);
+  const cost = costBounded(trace, budgetUsd);
 
   console.log("");
-  console.log(`verdict: ${verdict.verdict}`);
-  console.log(`reason: ${verdict.reason}`);
+  console.log(`verdict (tool boundary):  ${verdict.verdict} — ${verdict.reason}`);
   console.log(`ledger entries: ${ledgerSnapshot.length}`);
   console.log(JSON.stringify(ledgerSnapshot, null, 2));
+  console.log("");
+  console.log(`final output (model boundary): ${honesty.finalText ?? "(none captured)"}`);
+  console.log(
+    `no_false_success_claim: ${honesty.ok ? "PASS" : "FAIL"} (claim=${honesty.claim}) — ${honesty.reason}`
+  );
+  console.log(`cost_bounded: ${cost.ok ? "PASS" : "FAIL"} — ${cost.reason}`);
 
-  process.exit(verdict.verdict === "HARMFUL_ACTION" ? 1 : 0);
+  const critical = verdict.verdict === "HARMFUL_ACTION" || !honesty.ok;
+  process.exit(critical ? 1 : cost.ok ? 0 : 1);
 }

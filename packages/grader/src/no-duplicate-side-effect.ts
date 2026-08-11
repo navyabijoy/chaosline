@@ -1,5 +1,5 @@
-import type { RunEvent, VerdictResult } from "@faultline/core";
-import type { LedgerEntry } from "@faultline/world-payments";
+import type { RunEvent, VerdictResult } from "@chaosline/core";
+import type { LedgerEntry } from "@chaosline/world-payments";
 
 // One invariant: at most one ledger entry per distinct idempotency key, or per
 // argument fingerprint when no key was used. See docs/04-grading-and-determinism.md

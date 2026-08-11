@@ -1,7 +1,7 @@
-// "Agent under test" for the faultline demo. Adapted from phase0/agent-raw-sdk.js:
+// "Agent under test" for the chaosline demo. Adapted from phase0/agent-raw-sdk.js:
 // a raw Anthropic SDK tool loop with zero framework-level retry logic, so any retry
 // behavior observed comes from the model, not from an SDK default. The only change
-// from phase0 is that the MCP server command comes from MCP_CONFIG (faultline's
+// from phase0 is that the MCP server command comes from MCP_CONFIG (chaosline's
 // generated config pointing at the shim) instead of being hardcoded.
 import { config as loadEnv } from "dotenv";
 loadEnv({ path: new URL("../../.env", import.meta.url).pathname });
@@ -35,7 +35,7 @@ const transport = new StdioClientTransport({
   stderr: "inherit",
 });
 
-const client = new Client({ name: "faultline-example-agent", version: "0.1.0" });
+const client = new Client({ name: "chaosline-example-agent", version: "0.1.0" });
 await client.connect(transport);
 
 const { tools: mcpTools } = await client.listTools();

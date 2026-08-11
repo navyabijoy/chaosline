@@ -1,0 +1,16 @@
+{
+  "name": "@chaosline/proxy-model",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./mock-upstream": "./src/mock-upstream.ts"
+  },
+  "bin": {
+    "chaosline-mock-upstream": "./src/bin/mock-upstream.ts"
+  },
+  "dependencies": {
+    "@chaosline/core": "*"
+  }
+}

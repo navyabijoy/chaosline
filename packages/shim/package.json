@@ -1,5 +1,5 @@
 {
-  "name": "@faultline/shim",
+  "name": "@chaosline/shim",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -7,6 +7,6 @@
     ".": "./src/shim.ts"
   },
   "dependencies": {
-    "@faultline/core": "*"
+    "@chaosline/core": "*"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "faultline-monorepo",
+  "name": "chaosline-monorepo",
   "private": true,
   "type": "module",
   "workspaces": [
