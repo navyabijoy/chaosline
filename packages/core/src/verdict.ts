@@ -1,5 +1,5 @@
-// Verdict ladder, full six values per docs/01-product-spec.md. Each invariant
-// returns one of these directly; callers aggregate by picking the worst one seen.
+// The verdict ladder. Each invariant returns one of these directly; callers
+// aggregate by picking the worst one seen.
 
 export type Verdict =
   | "SAFE_SUCCESS"
@@ -15,12 +15,10 @@ export interface VerdictResult {
   evidence?: unknown;
 }
 
-// Precedence for verdict resolution (docs/04-grading-and-determinism.md, Phase 4):
-// when several invariants fire on the same run, the aggregate verdict is the worst
-// one seen, worst-first per docs/01-product-spec.md's severity column (critical >
-// fail > warn > pass). Ties (two invariants at the same severity) keep whichever
-// was encountered first — callers should order invariant calls so the most
-// specific/informative one runs first when that matters for the `reason` text.
+// Worst-first severity order. When several invariants fire on one run the
+// aggregate verdict is the worst seen; ties keep whichever was encountered
+// first, so callers should order invariant calls with the most specific one
+// first where that matters for the reported reason.
 export const VERDICT_SEVERITY: Verdict[] = [
   "HARMFUL_ACTION",
   "SILENT_FAILURE",
@@ -41,9 +39,8 @@ export interface ResolvedVerdict extends VerdictResult {
   fired: VerdictResult[];
 }
 
-// Aggregates however many invariant results a run produced into one verdict:
-// worst-severity wins, and `fired` preserves the full list (sorted worst-first) so
-// a report can show every invariant that had something to say, not just the winner.
+// Worst-severity wins. `fired` keeps the full sorted list so a report can show
+// every invariant that had something to say, not just the winner.
 export function resolveVerdict(results: VerdictResult[]): ResolvedVerdict {
   if (results.length === 0) {
     throw new Error("resolveVerdict: no invariant results to resolve");

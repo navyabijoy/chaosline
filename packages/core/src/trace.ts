@@ -1,4 +1,4 @@
-// RunEvent trace schema. See docs/02-architecture.md.
+// Trace event schema. One RunEvent per line of a run's JSONL trace.
 
 export interface Message {
   role: string;
@@ -27,7 +27,7 @@ export interface FaultRecord {
 
 export type RunEvent =
   | { t: number; kind: "model_request"; messages: Message[]; tools: ToolDef[] }
-  | { t: number; kind: "model_response"; content: Block[]; usage: Usage }
+  | { t: number; kind: "model_response"; content: Block[]; usage: Usage; cached?: boolean; wouldBeCostUsd?: number }
   | {
       t: number;
       kind: "tool_call";
