@@ -28,7 +28,14 @@ export interface FaultRecord {
 export type RunEvent =
   | { t: number; kind: "model_request"; messages: Message[]; tools: ToolDef[] }
   | { t: number; kind: "model_response"; content: Block[]; usage: Usage }
-  | { t: number; kind: "tool_call"; id: string; tool: string; args: unknown }
+  | {
+      t: number;
+      kind: "tool_call";
+      id: string;
+      tool: string;
+      args: unknown;
+      injected?: FaultRecord;
+    }
   | {
       t: number;
       kind: "tool_result";
