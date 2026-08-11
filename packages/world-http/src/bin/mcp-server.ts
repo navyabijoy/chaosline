@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // world-http as a real MCP server over stdio. No fault injection lives here —
-// per docs/02-architecture.md Mode A, faults belong at the proxy (packages/shim),
-// not inside the world. This process is clean.
+// faults belong at the proxy (packages/shim), not inside the world. This process
+// is clean.
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
