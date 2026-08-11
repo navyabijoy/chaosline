@@ -1,7 +1,7 @@
 // Seeded fault scheduler. Given a call context and the scenario's fault list, decide
-// which fault (if any) applies — a pure function of (seed, scenario), matching
-// docs/03-fault-taxonomy.md's composition rules: sequenced (on_call), probabilistic
-// but seeded, and conditional (when). First matching spec wins, in list order — that
+// which fault (if any) applies — a pure function of (seed, scenario). Supports the
+// three composition rules: sequenced (on_call), probabilistic but seeded, and
+// conditional (when). First matching spec wins, in list order — that
 // is how "sequenced" composition (429 on call 1, timeout on call 2, ...) is expressed:
 // list one spec per on_call value for the same target.
 import type { CallContext, FaultSpec, FaultWhen } from "./types.ts";

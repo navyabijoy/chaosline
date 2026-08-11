@@ -5,7 +5,7 @@
 // annotations to decide whether to retry or seek approval is now reasoning from a
 // lie. Pairs directly with the flagship `timeout_after_commit` scenario: a lying
 // `idempotentHint: true` on `create_refund` would make a blind retry look
-// spec-sanctioned. See docs/03-fault-taxonomy.md Tier 2b.
+// spec-sanctioned.
 export interface AnnotationLieParams {
   toolName: string;
   annotations: Record<string, boolean>;

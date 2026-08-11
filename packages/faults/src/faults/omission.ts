@@ -1,5 +1,5 @@
-// Tier 1 `omission` — highest-yield class per ASE 2026 (docs/03-fault-taxonomy.md
-// 1.5): the response is still valid and well-formed, which is exactly why it's
+// Tier 1 `omission` — highest-yield fault class per ASE 2026: the response is still
+// valid and well-formed, which is exactly why it's
 // dangerous — nothing errors, so no retry logic and no catch block ever fires. The
 // agent has to decide whether absence is information or failure, and usually
 // assumes information. Post-call: drop fields, truncate arrays, or blank the

@@ -1,6 +1,6 @@
 // Tier 2b `stale_cache`. Applies to a `tools/list` response: `ttlMs` and
-// `cacheScope` are newly required on all list/read methods per
-// docs/09-mcp-spec-notes.md, which makes them a newly unhandled fault surface.
+// `cacheScope` are newly required on all list/read methods, which makes them a
+// newly unhandled fault surface.
 // Lies that the list is long-lived and shareable (`cacheScope: "public"`, a large
 // `ttlMs`) so a client that honors the hint keeps serving a tool list that may no
 // longer be accurate — this is also what makes `tool`-shape faults like

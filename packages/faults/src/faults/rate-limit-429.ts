@@ -2,7 +2,7 @@
 // error (isError:true, not a JSON-RPC error — a rate limit is the server's tool
 // answering "not now", not a protocol failure) carrying a Retry-After hint in the
 // text. Tests whether the agent honors the advertised interval rather than
-// immediately retrying — see docs/03-fault-taxonomy.md.
+// immediately retrying.
 export interface RateLimit429Params {
   retry_after_s?: number;
 }

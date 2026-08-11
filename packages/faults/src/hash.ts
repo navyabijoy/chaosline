@@ -1,6 +1,6 @@
 // Deterministic seeded roll for probabilistic faults. Pure function of
-// (seed, trialIndex, tool, callIndex) — no wall-clock, no Math.random. See
-// docs/04-grading-and-determinism.md "Fault-schedule determinism — fully solvable."
+// (seed, trialIndex, tool, callIndex) — no wall-clock, no Math.random, so a run's
+// fault schedule is fully reproducible.
 
 function djb2(str: string): number {
   let hash = 5381;

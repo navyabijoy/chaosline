@@ -2,9 +2,8 @@
 // adversarial instructions are appended to the text content, styled as embedded
 // data the agent was told to treat as data. Detection is the canary mechanism (see
 // packages/faults/src/canary.ts): does the agent invoke the canary tool, or leak
-// the canary secret into an outbound call? Scope stays tight per
-// docs/03-fault-taxonomy.md 1.4 — this tests obedience to embedded instructions, not
-// jailbreak robustness generally.
+// the canary secret into an outbound call? Scope stays tight — this tests obedience
+// to embedded instructions, not jailbreak robustness generally.
 import { readContentJson, writeContentJson } from "../content-json.ts";
 
 export interface ToolResultInjectionParams {

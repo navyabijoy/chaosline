@@ -1,7 +1,7 @@
 // Tier 2 `schema_drift`. Post-call: the real call landed (or didn't — this doesn't
 // care), but the field the agent expects has moved. Renames one field in the
-// returned JSON payload. Realistic and rising as MCP servers version independently
-// — see docs/03-fault-taxonomy.md.
+// returned JSON payload. Realistic and rising as MCP servers version
+// independently.
 import { readContentJson, writeContentJson } from "../content-json.ts";
 
 export interface SchemaDriftParams {

@@ -1,6 +1,5 @@
-// Fault schedule types. See docs/03-fault-taxonomy.md "Fault schedule format" — this
-// is that same shape, expressed as a JS object rather than YAML. No parser here,
-// just types.
+// Fault schedule types. The fault schedule format, expressed as a JS object rather
+// than YAML. No parser here, just types.
 
 export type FaultKind =
   // Tier 1

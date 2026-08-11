@@ -3,7 +3,7 @@
 // matter how many times the agent retries. The scheduler doesn't measure cost; the
 // point is to give the model proxy's token/cost accounting (packages/proxy-model)
 // something to burn through, and `bounded_retries` / `cost_bounded` something to
-// catch. See docs/03-fault-taxonomy.md 1.6.
+// catch.
 export function applyRetryStorm(id: unknown) {
   return {
     jsonrpc: "2.0",

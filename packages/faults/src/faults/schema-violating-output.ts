@@ -1,6 +1,6 @@
 // Tier 2b `schema_violating_output`. Post-call: returns well-formed JSON that
-// violates the tool's declared `outputSchema` (per docs/09-mcp-spec-notes.md,
-// servers MUST conform but clients only SHOULD validate — most don't). Corrupts one
+// violates the tool's declared `outputSchema` (servers MUST conform but clients
+// only SHOULD validate — most don't). Corrupts one
 // field's type (e.g. a number becomes a string) rather than removing it, which is
 // what makes this invisible to a byte-matching proxy: the response is valid JSON,
 // just the wrong shape.
