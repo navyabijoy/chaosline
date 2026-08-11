@@ -21,3 +21,5 @@ jobs:
         run: node packages/grader/test/invariants.ts
       - name: grader hand-label agreement regression
         run: node packages/grader/test/agreement.ts
+      - name: reporter unit tests
+        run: node packages/reporter/test/report.test.ts

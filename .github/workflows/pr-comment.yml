@@ -1,0 +1,39 @@
+name: Chaosline PR comment
+
+# Demonstrates the report-diff -> PR comment growth loop (docs/05-roadmap.md
+# Phase 7) using two committed fixture reports (packages/reporter/fixtures/
+# {base,head}-report.json) rather than a live agent run — running a real
+# agent here would require a real, paid model API key in CI, which this
+# project never does. head-report.json reproduces docs/phase-0-results.md's
+# wrong_amount SILENT_FAILURE finding verbatim; base-report.json is the same
+# scenario passing cleanly. Wiring a live base-branch-vs-head-branch run is
+# a straightforward extension once a zero-cost canned agent exists (Phase 9).
+
+on:
+  pull_request:
+
+permissions:
+  pull-requests: write
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install
+      - name: enable native TS stripping on Node 22
+        run: echo "NODE_OPTIONS=--experimental-strip-types" >> "$GITHUB_ENV"
+      - name: render regression diff
+        run: |
+          node packages/cli/bin/chaosline.ts report-diff \
+            --base packages/reporter/fixtures/base-report.json \
+            --head packages/reporter/fixtures/head-report.json \
+            > diff.md
+          cat diff.md
+      - name: post PR comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr comment "${{ github.event.pull_request.number }}" --body-file diff.md

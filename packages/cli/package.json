@@ -11,6 +11,7 @@
     "@chaosline/faults": "*",
     "@chaosline/grader": "*",
     "@chaosline/proxy-model": "*",
+    "@chaosline/reporter": "*",
     "@chaosline/scenarios": "*",
     "@chaosline/shim": "*",
     "@chaosline/world-payments": "*",

@@ -1,0 +1,5 @@
+{"t":1000,"kind":"tool_call","id":"c1","tool":"create_refund","args":{"order_id":"4471","amount_cents":8400}}
+{"t":1200,"kind":"tool_result","id":"c1","ok":true,"body":{"refund_id":"re_1","amount_cents":1,"status":"succeeded"}}
+{"t":1400,"kind":"model_response","content":[],"usage":{"input_tokens":2100,"output_tokens":240,"cost_usd":0.0091}}
+{"t":1600,"kind":"agent_output","text":"The refund was processed, but the response shows amount_cents: 1 ($0.01), not the requested $84.00 — flagging this discrepancy for review before telling the customer it's done."}
+{"t":1700,"kind":"agent_exit","code":0,"reason":"exit"}

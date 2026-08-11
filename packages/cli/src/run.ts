@@ -12,7 +12,9 @@ import {
   isCritical,
   redactSecrets,
   type TrialResult,
+  type TrialSummary,
 } from "@chaosline/core";
+import { buildReport, renderMarkdown, renderJson, renderHtml, renderBadgeSvg, type ScenarioInput } from "@chaosline/reporter";
 import {
   backoffObserved,
   boundedRetries,
@@ -312,7 +314,7 @@ async function runOneScenario(
     modelUpstream: string;
     cache: ResponseCache;
   }
-): Promise<{ shouldFail: boolean }> {
+): Promise<{ shouldFail: boolean; scenarioInput: ScenarioInput }> {
   const { nTrials, passRate, criticalTolerance, noBaseline, budgetUsd, modelUpstream, cache } = opts;
   const scenarioId = scenario.id;
 
@@ -321,6 +323,7 @@ async function runOneScenario(
 
   const results: TrialResult[] = [];
   let baselineVerdict;
+  let baselineTracePath: string | undefined;
 
   if (!noBaseline) {
     console.log(`\nchaosline: baseline (no faults)`);
@@ -345,12 +348,17 @@ async function runOneScenario(
       demoTaskPrompt: scenario.demoTaskPrompt,
     });
     baselineVerdict = baselineResult.verdict;
+    baselineTracePath = baselineResult.tracePath;
     console.log(`baseline verdict: ${baselineVerdict}`);
 
     if (isCritical(baselineVerdict)) {
       console.log(`\nbaseline failed with critical verdict — scenario is INVALID`);
       console.log(`verdict: INVALID — agent cannot complete task without faults`);
-      return { shouldFail: true };
+      const invalidSummary: TrialSummary = summarizeTrials(scenarioId, [], baselineVerdict, criticalTolerance);
+      return {
+        shouldFail: true,
+        scenarioInput: { world: scenario.world, summary: invalidSummary, reproBundlePaths: new Map(), baselineTracePath },
+      };
     }
   }
 
@@ -407,6 +415,7 @@ async function runOneScenario(
 
   console.log(`${"=".repeat(60)}`);
 
+  const reproBundlePaths = new Map<number, string>();
   if (summary.criticalVerdicts.length > 0) {
     const reproDir = `.chaosline/repro/${scenarioId.replace(/\//g, "_")}`;
     mkdirSync(reproDir, { recursive: true });
@@ -438,6 +447,7 @@ async function runOneScenario(
         const redacted = redactSecrets(bundleData, scenario.canary ? [scenario.canary.secret] : []);
         const bundlePath = `${reproDir}/trial_${result.trialIndex}.json`;
         writeFileSync(bundlePath, JSON.stringify(redacted, null, 2));
+        reproBundlePaths.set(result.trialIndex, bundlePath);
         console.log(`\nrepro bundle: ${bundlePath}`);
       }
     }
@@ -445,7 +455,10 @@ async function runOneScenario(
 
   const exceedsTolerance = summary.criticalVerdicts.length > criticalTolerance;
   const passRateLow = summary.passRate < passRate;
-  return { shouldFail: exceedsTolerance || passRateLow };
+  return {
+    shouldFail: exceedsTolerance || passRateLow,
+    scenarioInput: { world: scenario.world, summary, reproBundlePaths, baselineTracePath },
+  };
 }
 
 export async function runCommand(args: string[]): Promise<void> {
@@ -519,11 +532,15 @@ export async function runCommand(args: string[]): Promise<void> {
 
   const noBaseline = args.includes("--no-baseline");
 
+  const reportDirIdx = args.indexOf("--report-dir");
+  const reportDir = reportDirIdx !== -1 ? args[reportDirIdx + 1] : undefined;
+
   const budgetUsd = Number(process.env.CHAOSLINE_BUDGET_USD ?? DEFAULT_BUDGET_USD);
   const modelUpstream = process.env.CHAOSLINE_MODEL_UPSTREAM ?? DEFAULT_MODEL_UPSTREAM;
 
   const cache = new ResponseCache();
   const outcomes: Array<{ scenarioId: string; shouldFail: boolean }> = [];
+  const scenarioInputs: ScenarioInput[] = [];
 
   if (scenarioIds.length > 1) {
     console.log(`chaosline: running ${scenarioIds.length} scenarios tagged "${tag}"`);
@@ -532,7 +549,7 @@ export async function runCommand(args: string[]): Promise<void> {
   for (const id of scenarioIds) {
     if (scenarioIds.length > 1) console.log(`\n${"-".repeat(60)}`);
     const scenario = scenarios.get(id)!;
-    const { shouldFail } = await runOneScenario(scenario, agentCmd, agentArgs, {
+    const { shouldFail, scenarioInput } = await runOneScenario(scenario, agentCmd, agentArgs, {
       nTrials,
       passRate,
       criticalTolerance,
@@ -542,6 +559,7 @@ export async function runCommand(args: string[]): Promise<void> {
       cache,
     });
     outcomes.push({ scenarioId: id, shouldFail });
+    scenarioInputs.push(scenarioInput);
   }
 
   if (scenarioIds.length > 1) {
@@ -553,7 +571,34 @@ export async function runCommand(args: string[]): Promise<void> {
     console.log(`${"=".repeat(60)}`);
   }
 
-  process.exit(outcomes.some((o) => o.shouldFail) ? 1 : 0);
+  // Gate: true if any scenario exceeded tolerance or failed pass-rate threshold
+  const gatePassed = !outcomes.some((o) => o.shouldFail);
+  const gateReason = gatePassed
+    ? `0 critical findings, all scenarios passed`
+    : `${outcomes.filter((o) => o.shouldFail).length}/${outcomes.length} scenario(s) failed`;
+
+  if (reportDir) {
+    mkdirSync(reportDir, { recursive: true });
+    const report = buildReport(scenarioInputs, { passed: gatePassed, reason: gateReason }, Date.now());
+
+    const markdownPath = `${reportDir}/report.md`;
+    writeFileSync(markdownPath, renderMarkdown(report));
+    console.log(`\nreport: ${markdownPath}`);
+
+    const jsonPath = `${reportDir}/report.json`;
+    writeFileSync(jsonPath, renderJson(report));
+    console.log(`report: ${jsonPath}`);
+
+    const htmlPath = `${reportDir}/report.html`;
+    writeFileSync(htmlPath, renderHtml(report));
+    console.log(`report: ${htmlPath}`);
+
+    const badgePath = `${reportDir}/badge.svg`;
+    writeFileSync(badgePath, renderBadgeSvg(report));
+    console.log(`report: ${badgePath}`);
+  }
+
+  process.exit(gatePassed ? 0 : 1);
 }
 
 export { loadAllScenarios };
