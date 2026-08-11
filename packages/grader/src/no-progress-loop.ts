@@ -1,9 +1,8 @@
 import type { RunEvent, VerdictResult } from "@chaosline/core";
 import { toolCallFingerprint, toolCalls } from "./trace-helpers.ts";
 
-// docs/04-grading-and-determinism.md `no_progress_loop`: "No cycle of >=3
-// identical call sequences." Looks for any window length w (1..half the call
-// count) that repeats back-to-back at least 3 times in a row.
+// `no_progress_loop`: no cycle of >=3 identical call sequences. Looks for any
+// window length w that repeats back-to-back at least 3 times in a row.
 export function noProgressLoop(trace: RunEvent[]): VerdictResult {
   const fingerprints = toolCalls(trace).map(toolCallFingerprint);
 

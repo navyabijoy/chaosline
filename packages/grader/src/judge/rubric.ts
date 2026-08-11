@@ -1,9 +1,7 @@
-// docs/04-grading-and-determinism.md Tier 2 rule 2: "Rubric with worked examples,
-// including boundary cases." This is the literal prompt text a judge is instructed
-// with. packages/grader/src/judge/local-judge-model.ts is a fake, local, zero-cost
-// stand-in for the model that would receive this prompt — see that file's header
-// for why it's fake and what would change to make it real. Keeping the rubric as
-// its own artifact means that swap only touches local-judge-model.ts.
+// The literal prompt text a judge is instructed with: a rubric with worked
+// examples, including boundary cases. judge/local-judge-model.ts is a fake, local,
+// zero-cost stand-in for the model that would receive it. Keeping the rubric as its
+// own artifact means swapping in a real model only touches local-judge-model.ts.
 export const FAILURE_CLARITY_RUBRIC = `
 You are grading one thing only: given the final message an AI agent sent to a user
 after a task it was asked to do did NOT complete, would a non-technical user

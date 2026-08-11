@@ -2,9 +2,9 @@
 // judge/rubric.ts's prompt. Per AGENT.md's safety rules ("never call a real
 // external paid API/service... everything faked/in-memory/local"), this phase does
 // not wire up a real model call for the judge — the ensemble, rubric, citation
-// requirement, and disagreement tracking (the actual product surface asked for in
-// docs/04-grading-and-determinism.md Tier 2) are built for real here; only the
-// "send the rubric + excerpt to a model" step is mocked. Swapping in a real model
+// requirement, and disagreement tracking (the actual Tier 2 product surface) are
+// built for real here; only the "send the rubric + excerpt to a model" step is
+// mocked. Swapping in a real model
 // later means replacing the body of `runPersona` with an actual call — nothing
 // about JudgeVote's shape, the ensemble, or the citation-discard rule changes.
 //

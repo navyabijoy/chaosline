@@ -12,8 +12,7 @@ export interface FailureSurfacedWithJudgeResult {
 
 // Composes Tier 1 (failure-surfaced.ts) with the Tier 2 escalation: only when the
 // cheap classifier lands on "ambiguous" do we pay for the judge ensemble at all.
-// docs/04-grading-and-determinism.md is explicit that this is the only case
-// worth escalating — a clear "success" or "failure" reading needs no judgment.
+// A clear "success" or "failure" reading needs no judgment.
 export function failureSurfacedWithJudge(
   trace: RunEvent[],
   taskCompleted: boolean

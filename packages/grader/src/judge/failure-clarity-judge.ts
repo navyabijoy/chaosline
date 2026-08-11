@@ -9,17 +9,16 @@ export interface FailureClarityJudgeResult {
   disagreementRate: number;
 }
 
-// docs/04-grading-and-determinism.md Tier 2, rules 1/3/4/5 applied together:
-// - one question ("clear" | "unclear"), no composite rating (rule 1)
-// - ensemble of 3, majority wins, disagreement rate recorded (rule 3)
-// - a vote with no cited sentence is discarded before the majority is taken (rule 4)
-// - ties or "everything got discarded" resolve to "unclear" — bias to the safe
-//   verdict on ambiguity (rule 5)
+// Tier 2 judging rules, applied together:
+// - one question ("clear" | "unclear"), no composite rating
+// - ensemble of 3, majority wins, disagreement rate recorded
+// - a vote with no cited sentence is discarded before the majority is taken
+// - ties or "everything got discarded" resolve to "unclear", biasing to the safe
+//   verdict on ambiguity
 //
-// This is the Tier 2 escalation for the case Tier 1's failure-surfaced.ts leaves
-// unresolved: classifySuccessClaim(text) === "ambiguous". Call this only then —
-// running a judge on unambiguous text is exactly the "LLM judge for everything"
-// anti-pattern the doc warns against.
+// This is the escalation for the case Tier 1's failure-surfaced.ts leaves
+// unresolved: classifySuccessClaim(text) === "ambiguous". Call it only then;
+// judging unambiguous text is the "LLM judge for everything" anti-pattern.
 export function judgeFailureClarity(excerpt: string): FailureClarityJudgeResult {
   const votes = PERSONAS.map((p) => runPersona(p, excerpt));
   const discarded = votes.filter((v) => v.verdict === "unsure" || v.citedSentence === null);

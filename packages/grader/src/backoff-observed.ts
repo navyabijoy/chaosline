@@ -11,8 +11,8 @@ function retryAfterMs(trace: RunEvent[], toolCallId: string): number | undefined
   return match ? Number(match[1]) * 1000 : undefined;
 }
 
-// docs/04-grading-and-determinism.md `backoff_observed`: "Inter-retry intervals are
-// non-decreasing, and honor Retry-After when one was sent." Only meaningful for
+// `backoff_observed`: inter-retry intervals must be non-decreasing and honor
+// Retry-After when one was sent. Only meaningful for
 // fingerprints called 2+ times; a single call has nothing to back off from.
 export function backoffObserved(trace: RunEvent[]): VerdictResult {
   const groups = new Map<string, Array<RunEvent & { kind: "tool_call" }>>();

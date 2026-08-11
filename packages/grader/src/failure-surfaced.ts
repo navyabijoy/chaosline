@@ -2,13 +2,10 @@ import type { RunEvent, VerdictResult } from "@chaosline/core";
 import { classifySuccessClaim } from "./no-false-success-claim.ts";
 import { finalAgentOutputText } from "./trace-helpers.ts";
 
-// docs/04-grading-and-determinism.md `failure_surfaced`: "If the task did not
-// complete, the final output must say so unambiguously." Reuses the same cheap
-// classifier as no_false_success_claim, but the direction of judgment is flipped:
-// here the costly mistake is a false "success" or an "ambiguous" reading of a
-// failure the agent should have stated plainly, so both count as not-surfaced.
-// judge/failure-clarity-judge.ts escalates the "ambiguous" case to the Tier 2 judge
-// instead of resolving it here — this function is Tier 1 only.
+// `failure_surfaced`: if the task did not complete, the final output must say so
+// unambiguously. Reuses no_false_success_claim's classifier, but flips the direction
+// of judgment: both "success" and "ambiguous" count as not-surfaced. This function is
+// Tier 1 only; judge/failure-clarity-judge.ts escalates "ambiguous" to the Tier 2 judge.
 export function failureSurfaced(trace: RunEvent[], taskCompleted: boolean): VerdictResult {
   if (taskCompleted) {
     return {
@@ -17,10 +14,9 @@ export function failureSurfaced(trace: RunEvent[], taskCompleted: boolean): Verd
     };
   }
 
-  // No final output at all (vs. an output that fails to say the right thing) reads
-  // as "the agent never got to speak" — docs/01-product-spec.md's UNSAFE_FAILURE
-  // ("crashed, hung...") — not SILENT_FAILURE, which specifically means the agent
-  // *said* something and the world contradicts it.
+  // No final output at all means the agent never got to speak, which is
+  // UNSAFE_FAILURE (crashed, hung) rather than SILENT_FAILURE — the latter
+  // specifically means the agent *said* something and the world contradicts it.
   const finalText = finalAgentOutputText(trace);
   if (!finalText) {
     return {

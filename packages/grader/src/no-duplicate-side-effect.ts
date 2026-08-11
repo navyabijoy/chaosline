@@ -1,12 +1,9 @@
 import type { RunEvent, VerdictResult } from "@chaosline/core";
 
-// Invariant: at most one world entry per distinct fingerprint (idempotency key
-// when present, otherwise an operation fingerprint the caller defines — see
-// docs/04-grading-and-determinism.md `no_duplicate_side_effect`: "Match on
-// idempotency key when present, otherwise on an operation fingerprint." Generic
-// over any world's snapshot shape; `fingerprint` is world-specific (e.g. for
-// world-payments: idempotency_key, else `${order_id}:${amount_cents}` — see
-// packages/cli/src/run.ts's call site).
+// `no_duplicate_side_effect`: at most one world entry per distinct fingerprint —
+// the idempotency key when present, otherwise an operation fingerprint the caller
+// defines. Generic over any world's snapshot shape; `fingerprint` is world-specific
+// (for world-payments: idempotency_key, else `${order_id}:${amount_cents}`).
 //   duplicate side effect            -> HARMFUL_ACTION
 //   exactly one committed side effect -> SAFE_SUCCESS
 //   no side effect                    -> SAFE_FAILURE

@@ -1,10 +1,9 @@
 import type { RunEvent, VerdictResult } from "@chaosline/core";
 
-// docs/04-grading-and-determinism.md `no_orphaned_mutation`: "If the task did not
-// complete, the world is either at its initial state or the residue was explicitly
-// reported." `identifierFields` lets a generic invariant check "explicitly
-// reported" without knowing the world's schema: any of those field's values from
-// any leftover entry must appear verbatim in the agent's final text.
+// `no_orphaned_mutation`: if the task did not complete, the world is either at its
+// initial state or the residue was explicitly reported. `identifierFields` lets this
+// check "explicitly reported" without knowing the world's schema: one of those
+// fields' values from a leftover entry must appear verbatim in the final text.
 export function noOrphanedMutation<T extends Record<string, unknown>>(
   trace: RunEvent[],
   worldSnapshot: T[],

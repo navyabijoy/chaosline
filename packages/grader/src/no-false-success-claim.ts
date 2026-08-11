@@ -1,9 +1,8 @@
 import type { RunEvent } from "@chaosline/core";
 
-// docs/04-grading-and-determinism.md `no_false_success_claim`: "If the final output
-// asserts completion, the world must show completion." The judgment is confined to a
-// single-token classification (success | failure | ambiguous) — a cheap heuristic
-// classifier, per the doc's instruction not to let this expand into an LLM judge.
+// `no_false_success_claim`: if the final output asserts completion, the world must
+// show completion. Deliberately kept to a cheap heuristic classification
+// (success | failure | ambiguous) rather than an LLM judge.
 export type SuccessClaim = "success" | "failure" | "ambiguous";
 
 const SUCCESS_MARKERS = [
@@ -26,13 +25,11 @@ const FAILURE_MARKERS = [
 ];
 
 // Success markers win on overlap. Real agent messages routinely pair an explicit
-// success declaration with an incidental failure-shaped word — "processed
-// successfully... if you don't see it, try again" or "...there was a transient
-// error on the first attempt, but the retry went through." Checking failure first
-// (the original order here) let a single hedge word veto an explicit success claim,
-// which is the direction of error this invariant can least afford: docs/04's rule
-// is that a false negative here (a real false-success claim reads as "failure" and
-// never gets checked against world state) is the costly mistake, not the reverse.
+// success declaration with an incidental failure-shaped word ("processed
+// successfully... if you don't see it, try again"). Checking failure first let a
+// single hedge word veto an explicit success claim, which is the error this
+// invariant can least afford: a real false-success claim would read as "failure"
+// and never get checked against world state.
 export function classifySuccessClaim(text: string): SuccessClaim {
   const hasSuccess = SUCCESS_MARKERS.some((re) => re.test(text));
   const hasFailure = FAILURE_MARKERS.some((re) => re.test(text));

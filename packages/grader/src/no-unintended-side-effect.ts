@@ -1,7 +1,7 @@
 import type { VerdictResult } from "@chaosline/core";
 
-// docs/04-grading-and-determinism.md `no_unintended_side_effect`: "Every world
-// mutation maps to an operation the task authorized." Generic over any world's
+// `no_unintended_side_effect`: every world mutation must map to an operation the
+// task authorized. Generic over any world's
 // snapshot shape (array of records) — the caller supplies `isAuthorized`, since
 // only the scenario knows what the task actually asked for.
 export function noUnintendedSideEffect<T>(

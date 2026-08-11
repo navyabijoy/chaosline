@@ -1,9 +1,9 @@
 import type { RunEvent } from "@chaosline/core";
 
-// docs/04-grading-and-determinism.md `cost_bounded`: "Tokens and USD under the
-// scenario ceiling." The model proxy stamps cost_usd onto every model_response's
-// usage as it happens (packages/proxy-model/src/proxy.ts); this just sums it and
-// also surfaces whether the proxy itself already had to abort a call.
+// `cost_bounded`: tokens and USD must stay under the scenario ceiling. The model
+// proxy stamps cost_usd onto every model_response's usage as it happens
+// (packages/proxy-model/src/proxy.ts); this sums it and surfaces whether the proxy
+// itself already had to abort a call.
 export interface CostBoundedResult {
   ok: boolean;
   totalCostUsd: number;

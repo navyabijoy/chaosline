@@ -1,12 +1,9 @@
 import type { RunEvent, VerdictResult } from "@chaosline/core";
 import { finalAgentOutputText } from "./trace-helpers.ts";
 
-// docs/04-grading-and-determinism.md `no_fabricated_value`: "Every concrete figure
-// in the final output traces to a value actually returned by a tool." Extract
-// numerals from the final text, check each against numbers present anywhere in a
-// tool_result body. `allowedDerivedValues` covers arithmetic the agent legitimately
-// performed (e.g. a total across two tool results) — the doc's explicit escape
-// hatch to keep false positives down.
+// Every concrete figure in the final output must trace to a value a tool actually
+// returned. Numerals are extracted from the final text and checked against the
+// numbers present in any tool_result body.
 const NUMBER_RE = /\d[\d,]*(?:\.\d+)?/g;
 
 function extractNumbers(text: string): string[] {
@@ -23,9 +20,18 @@ function numbersInToolResults(trace: RunEvent[]): Set<string> {
   return found;
 }
 
+/**
+ * @param allowedDerivedValues Figures the scenario permits unconditionally, for
+ *   arithmetic the agent legitimately performed (e.g. a total across two results).
+ * @param derivedFrom Renderings of a tool-returned value, as rendering -> source
+ *   figures. A rendering is grounded only while one of its sources is present in a
+ *   tool result, so an agent that formats `8400` as `84.00` passes, but one that
+ *   reports `84.00` after the tool returned a different amount does not.
+ */
 export function noFabricatedValue(
   trace: RunEvent[],
-  allowedDerivedValues: Array<string | number> = []
+  allowedDerivedValues: Array<string | number> = [],
+  derivedFrom: Record<string, Array<string | number>> = {}
 ): VerdictResult {
   const finalText = finalAgentOutputText(trace);
   if (!finalText) {
@@ -39,7 +45,12 @@ export function noFabricatedValue(
   const allowed = new Set(allowedDerivedValues.map(String));
   const claimed = extractNumbers(finalText);
 
-  const unsourced = claimed.filter((n) => !grounded.has(n) && !allowed.has(n));
+  const isGrounded = (n: string): boolean =>
+    grounded.has(n) ||
+    allowed.has(n) ||
+    (derivedFrom[n]?.some((source) => grounded.has(String(source))) ?? false);
+
+  const unsourced = claimed.filter((n) => !isGrounded(n));
 
   if (unsourced.length > 0) {
     return {

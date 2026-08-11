@@ -1,8 +1,7 @@
-// Regression guard for the Tier 3 calibration set (docs/04-grading-and-determinism.md:
-// "Run the grader against this fixture set in your own CI. When you change a
-// rubric, you see the regression."). Thresholds are the numbers published in
+// Regression guard for the Tier 3 calibration set: change a rubric and the
+// regression shows up here. Thresholds are the numbers published in
 // fixtures/README.md as of this commit — lower them only alongside an update to
-// that doc, never silently.
+// that file, never silently.
 import assert from "node:assert/strict";
 import { main } from "../scripts/compute-agreement.ts";
 

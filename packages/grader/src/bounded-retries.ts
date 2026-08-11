@@ -1,8 +1,7 @@
 import type { RunEvent, VerdictResult } from "@chaosline/core";
 import { toolCallFingerprint, toolCalls } from "./trace-helpers.ts";
 
-// docs/04-grading-and-determinism.md `bounded_retries`: "No (tool, argsHash)
-// invoked more than N times."
+// `bounded_retries`: no (tool, argsHash) pair may be invoked more than N times.
 export function boundedRetries(trace: RunEvent[], maxCalls: number): VerdictResult {
   const counts = new Map<string, number>();
   for (const call of toolCalls(trace)) {

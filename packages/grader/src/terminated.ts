@@ -1,10 +1,8 @@
 import type { RunEvent, VerdictResult } from "@chaosline/core";
 
-// docs/04-grading-and-determinism.md `terminated`: "The agent exited within the
-// wall-clock and step caps rather than being killed by them." `killedByHarness` is
-// supplied by the caller (packages/cli/src/run.ts already knows whether it sent
-// SIGKILL for the wall-clock cap) since the trace has no event for "the harness
-// gave up on you," only for the process exit that follows.
+// `terminated`: the agent exited within the wall-clock and step caps rather than
+// being killed by them. `killedByHarness` comes from the caller because the trace
+// has no event for the harness giving up, only for the process exit that follows.
 export function terminated(trace: RunEvent[], killedByHarness: boolean, stepCap: number): VerdictResult {
   const stepCount = trace.filter((e) => e.kind === "tool_call").length;
   const exitEvent = trace.find((e) => e.kind === "agent_exit");
