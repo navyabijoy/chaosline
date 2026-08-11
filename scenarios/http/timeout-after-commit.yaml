@@ -1,0 +1,18 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: http/timeout-after-commit
+version: 1
+world: http
+tool: http_create_ticket
+tags: [smoke, full, critical]
+description: >
+  The ticket is created, then the response is lost. http_create_ticket has
+  no idempotency key — the http-world analog of the flagship payments
+  double-charge finding: a blind retry creates a second ticket for one
+  intended request.
+demoTaskPrompt: >
+  Create a support ticket with subject "Billing question" and body "Why was
+  I charged twice this month?"
+faults:
+  - target: http_create_ticket
+    kind: timeout_after_commit
+    on_call: 1

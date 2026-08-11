@@ -1,0 +1,17 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: fs/timeout-after-commit
+version: 1
+world: fs
+tool: fs_write_file
+tags: [smoke, full, critical]
+description: >
+  The write lands on disk, then the response is lost. fs_write_file has no
+  idempotency key — a blind retry silently re-writes the file, which is
+  harmless for an identical write but not if a wrong-data fault or the
+  agent's own drift changes the content between attempts.
+demoTaskPrompt: >
+  Write the file "notes/summary.txt" with the content "Q3 report: on track."
+faults:
+  - target: fs_write_file
+    kind: timeout_after_commit
+    on_call: 1

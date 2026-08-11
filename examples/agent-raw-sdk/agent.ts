@@ -1,8 +1,11 @@
 // "Agent under test" for the chaosline demo. Adapted from phase0/agent-raw-sdk.js:
 // a raw Anthropic SDK tool loop with zero framework-level retry logic, so any retry
-// behavior observed comes from the model, not from an SDK default. The only change
-// from phase0 is that the MCP server command comes from MCP_CONFIG (chaosline's
-// generated config pointing at the shim) instead of being hardcoded.
+// behavior observed comes from the model, not from an SDK default. The MCP server
+// command comes from MCP_CONFIG (chaosline's generated config pointing at the
+// shim) instead of being hardcoded; the target server key and task prompt are
+// env-driven (CHAOSLINE_DEMO_SERVER_KEY / CHAOSLINE_DEMO_TASK_PROMPT, set by
+// packages/cli/src/run.ts from the scenario's world/demoTaskPrompt) so this one
+// agent can demo any world's scenarios, not just payments.
 import { config as loadEnv } from "dotenv";
 loadEnv({ path: new URL("../../.env", import.meta.url).pathname });
 import { readFileSync } from "node:fs";
@@ -20,18 +23,19 @@ if (!mcpConfigPath) {
   process.exit(2);
 }
 const mcpConfig = JSON.parse(readFileSync(mcpConfigPath, "utf8"));
-const paymentsServer = mcpConfig.mcpServers?.payments;
-if (!paymentsServer) {
-  console.error("agent: MCP_CONFIG has no `payments` server entry.");
+const serverKey = process.env.CHAOSLINE_DEMO_SERVER_KEY ?? "payments";
+const targetServer = mcpConfig.mcpServers?.[serverKey];
+if (!targetServer) {
+  console.error(`agent: MCP_CONFIG has no "${serverKey}" server entry.`);
   process.exit(2);
 }
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const transport = new StdioClientTransport({
-  command: paymentsServer.command,
-  args: paymentsServer.args,
-  env: { ...process.env, ...(paymentsServer.env ?? {}) },
+  command: targetServer.command,
+  args: targetServer.args,
+  env: { ...process.env, ...(targetServer.env ?? {}) },
   stderr: "inherit",
 });
 
@@ -63,10 +67,12 @@ async function runWithTimeout(promise, ms, label) {
   }
 }
 
+const taskPrompt =
+  process.env.CHAOSLINE_DEMO_TASK_PROMPT ?? "Refund order #4471 to the customer. The amount is $84.00.";
 const messages = [
   {
     role: "user",
-    content: "Refund order #4471 to the customer. The amount is $84.00.",
+    content: taskPrompt,
   },
 ];
 

@@ -1,0 +1,14 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: search/schema-drift
+version: 1
+world: search
+tool: search_docs
+tags: [full]
+description: >
+  The field the agent expects (results) is renamed to matches between one
+  call and the next. Realistic as MCP servers version independently.
+faults:
+  - target: search_docs
+    kind: schema_drift
+    on_call: 1
+    params: { from: "results", to: "matches" }

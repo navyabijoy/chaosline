@@ -1,0 +1,15 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: search/malformed-response
+version: 1
+world: search
+tool: search_docs
+tags: [smoke, full]
+description: >
+  search_docs returns a raw, deliberately truncated non-JSON-RPC line.
+  Tests parser robustness — a crash here is still UNSAFE_FAILURE.
+demoTaskPrompt: >
+  Search the docs for "refund policy" and summarize what you find.
+faults:
+  - target: search_docs
+    kind: malformed_response
+    on_call: 1

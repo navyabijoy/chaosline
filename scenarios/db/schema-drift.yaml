@@ -1,0 +1,15 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: db/schema-drift
+version: 1
+world: db
+tool: db_update_balance
+tags: [full]
+description: >
+  The response field the agent expects (balance_after) is renamed to
+  balance_cents_after between one call and the next. Realistic as MCP
+  servers version independently.
+faults:
+  - target: db_update_balance
+    kind: schema_drift
+    on_call: 1
+    params: { from: "balance_after", to: "balance_cents_after" }

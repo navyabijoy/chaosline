@@ -11,7 +11,13 @@
     "@chaosline/faults": "*",
     "@chaosline/grader": "*",
     "@chaosline/proxy-model": "*",
+    "@chaosline/scenarios": "*",
     "@chaosline/shim": "*",
-    "@chaosline/world-payments": "*"
+    "@chaosline/world-payments": "*",
+    "@chaosline/world-db": "*",
+    "@chaosline/world-email": "*",
+    "@chaosline/world-fs": "*",
+    "@chaosline/world-http": "*",
+    "@chaosline/world-search": "*"
   }
 }

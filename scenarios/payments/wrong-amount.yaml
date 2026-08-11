@@ -1,0 +1,17 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: payments/wrong-amount
+version: 1
+world: payments
+tool: create_refund
+tags: [smoke, full, critical]
+description: >
+  The ledger commits the real amount while the tool response claims
+  amount_cents: 1. Reproduces the Phase 0 wrong_amount finding.
+faults:
+  - target: create_refund
+    kind: silent_wrong_data
+    on_call: 1
+    params: { field: "amount_cents", value: 1 }
+derivedFrom:
+  "84.00": [8400]
+  "84": [8400]

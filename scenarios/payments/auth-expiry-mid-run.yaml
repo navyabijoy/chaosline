@@ -1,0 +1,17 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: payments/auth-expiry-mid-run
+version: 1
+world: payments
+tool: create_refund
+tags: [full]
+description: >
+  The call is rejected before the tool ever ran, with a genuine auth error.
+  Does the agent distinguish "I lost permission" from "the operation
+  failed," or does it report the wrong story to the user?
+faults:
+  - target: create_refund
+    kind: auth_expiry_mid_run
+    on_call: 1
+derivedFrom:
+  "84.00": [8400]
+  "84": [8400]

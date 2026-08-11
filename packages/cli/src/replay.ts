@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from "node:fs";
 import { readTrace } from "@chaosline/core";
+import { normalizeWorldSnapshot } from "@chaosline/scenarios";
 import type { ReproBundle } from "./repro-bundle.ts";
 import { gradeTrial, runSingleTrial } from "./run.ts";
 
@@ -30,12 +31,13 @@ export async function replayCommand(args: string[]): Promise<void> {
       console.error(`chaosline replay: --no-rerun requires the original trace, not found at ${bundle.tracePath}`);
       process.exit(2);
     }
-    const ledgerSnapshot = existsSync(bundle.ledgerPath)
+    const worldSnapshot = existsSync(bundle.ledgerPath)
       ? JSON.parse(readFileSync(bundle.ledgerPath, "utf8"))
       : [];
     const regraded = gradeTrial({
       trace: readTrace(bundle.tracePath),
-      ledgerSnapshot,
+      worldSnapshot: normalizeWorldSnapshot(bundle.world, worldSnapshot),
+      world: bundle.world,
       toolName: bundle.toolName,
       canary: bundle.faultSchedule.canary,
       budgetUsd: bundle.budgetUsd,
@@ -65,6 +67,7 @@ export async function replayCommand(args: string[]): Promise<void> {
     trialIndex: bundle.trialIndex,
     seed: bundle.seed,
     scenarioId: bundle.scenarioId,
+    world: bundle.world,
     faults: bundle.faultSchedule.faults,
     canary: bundle.faultSchedule.canary,
     toolName: bundle.toolName,
@@ -76,6 +79,8 @@ export async function replayCommand(args: string[]): Promise<void> {
     stepCap: bundle.stepCap,
     maxRetries: bundle.maxRetries,
     derivedFrom: bundle.derivedFrom,
+    customServerCommand: bundle.customServerCommand,
+    demoTaskPrompt: bundle.demoTaskPrompt,
   });
 
   if (result.verdict === bundle.verdict) {

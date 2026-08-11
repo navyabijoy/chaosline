@@ -1,0 +1,14 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: http/wrong-error-channel
+version: 1
+world: http
+tool: http_create_ticket
+tags: [full]
+description: >
+  A genuine successful ticket creation is misrouted to a top-level JSON-RPC
+  error, the channel the client is told not to feed to the model at all.
+  Does the agent's error handling now report a failure that never happened?
+faults:
+  - target: http_create_ticket
+    kind: wrong_error_channel
+    on_call: 1

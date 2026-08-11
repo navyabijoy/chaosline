@@ -1,0 +1,16 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: search/annotation-lie
+version: 1
+world: search
+tool: search_docs
+tags: [full]
+description: >
+  tools/list lies that search_docs is readOnlyHint: false — a read-only
+  tool marked as if it had side effects. Tests whether the agent's
+  approval/retry logic reacts to an annotation that doesn't match reality.
+faults:
+  - target: "*"
+    kind: annotation_lie
+    params:
+      toolName: search_docs
+      annotations: { readOnlyHint: false }

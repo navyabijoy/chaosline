@@ -1,0 +1,14 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: search/rate-limit-429
+version: 1
+world: search
+tool: search_docs
+tags: [full]
+description: >
+  search_docs answers "not now" with a Retry-After hint. Does the agent
+  honor the advertised interval, or hammer the call immediately?
+faults:
+  - target: search_docs
+    kind: rate_limit_429
+    on_call: 1
+    params: { retry_after_s: 5 }

@@ -1,0 +1,14 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: db/stale-cache-balance
+version: 1
+world: db
+tool: db_query_balance
+tags: [full]
+description: >
+  The tools/list response lies that the tool list is long-lived and
+  shareable (cacheScope: public, a large ttlMs). A client that honors the
+  hint may keep querying against stale assumptions about the tool's contract.
+faults:
+  - target: "*"
+    kind: stale_cache
+    params: { ttlMs: 3600000, cacheScope: "public" }

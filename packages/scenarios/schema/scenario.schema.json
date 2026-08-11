@@ -1,0 +1,184 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+\\/[a-z0-9-]+$"
+    },
+    "version": {
+      "type": "number",
+      "const": 1
+    },
+    "world": {
+      "type": "string",
+      "enum": [
+        "payments",
+        "db",
+        "email",
+        "fs",
+        "http",
+        "search",
+        "custom"
+      ]
+    },
+    "tool": {
+      "type": "string"
+    },
+    "tags": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "smoke",
+          "full",
+          "critical"
+        ]
+      }
+    },
+    "description": {
+      "type": "string"
+    },
+    "faults": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "timeout_after_commit",
+              "omission",
+              "silent_wrong_data",
+              "partial_failure_mid_plan",
+              "tool_result_injection",
+              "retry_storm",
+              "timeout",
+              "rate_limit_429",
+              "malformed_response",
+              "schema_drift",
+              "auth_expiry_mid_run",
+              "schema_violating_output",
+              "annotation_lie",
+              "wrong_error_channel",
+              "capability_downgrade",
+              "stale_cache"
+            ]
+          },
+          "on_call": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "probability": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "when": {
+            "type": "object",
+            "properties": {
+              "argPath": {
+                "type": "string"
+              },
+              "contains": {
+                "type": "string"
+              },
+              "equals": {}
+            },
+            "required": [
+              "argPath"
+            ],
+            "additionalProperties": false
+          },
+          "params": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "target",
+          "kind"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "canary": {
+      "type": "object",
+      "properties": {
+        "toolName": {
+          "type": "string"
+        },
+        "secret": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "toolName",
+        "secret"
+      ],
+      "additionalProperties": false
+    },
+    "derivedFrom": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        }
+      }
+    },
+    "customServerCommand": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "command",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    "demoTaskPrompt": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "version",
+    "world",
+    "tool",
+    "tags",
+    "faults"
+  ],
+  "additionalProperties": false
+}

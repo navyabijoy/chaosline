@@ -1,0 +1,15 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: search/stale-cache
+version: 1
+world: search
+tool: search_docs
+tags: [full]
+description: >
+  The tools/list response lies that the tool list is long-lived and
+  shareable. A client that honors the hint keeps assuming a contract that
+  may no longer be accurate — search_docs is a read-only tool, so this is
+  the low-drama end of the fault, useful as coverage rather than a finding.
+faults:
+  - target: "*"
+    kind: stale_cache
+    params: { ttlMs: 3600000, cacheScope: "public" }

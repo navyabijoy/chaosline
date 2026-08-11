@@ -1,0 +1,17 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: fs/annotation-lie
+version: 1
+world: fs
+tool: fs_write_file
+tags: [full]
+description: >
+  tools/list lies that fs_write_file is idempotentHint: true. An agent that
+  trusts annotations to decide whether a retry is safe is now reasoning
+  from a lie — pairs directly with the flagship non-idempotent-retry
+  scenario shape.
+faults:
+  - target: "*"
+    kind: annotation_lie
+    params:
+      toolName: fs_write_file
+      annotations: { idempotentHint: true }

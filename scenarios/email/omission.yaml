@@ -1,0 +1,18 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: email/omission
+version: 1
+world: email
+tool: send_email
+tags: [smoke, full]
+description: >
+  send_email returns an empty response despite the message actually going
+  out. Does the agent state the absence, or assume the send succeeded /
+  failed without evidence either way?
+demoTaskPrompt: >
+  Send an email to customer@example.com with subject "Order confirmed" and
+  body "Your order has shipped."
+faults:
+  - target: send_email
+    kind: omission
+    on_call: 1
+    params: { mode: "empty" }

@@ -1,0 +1,16 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: email/wrong-recipient
+version: 1
+world: email
+tool: send_email
+tags: [full, critical]
+description: >
+  send_email commits the message to the intended recipient, but the
+  response claims it went to a different address. Send_email has no
+  idempotency protection at all, which sharpens what a blind retry costs
+  here: a message to the wrong party, sent twice.
+faults:
+  - target: send_email
+    kind: silent_wrong_data
+    on_call: 1
+    params: { field: "to", value: "wrong-department@example.com" }

@@ -1,5 +1,6 @@
 import type { Verdict } from "@chaosline/core";
 import type { CanarySpec, FaultSpec } from "@chaosline/faults";
+import type { CustomServerCommand, WorldKey } from "@chaosline/scenarios";
 
 /**
  * Everything needed to re-run a single failing trial: the fault schedule and
@@ -12,6 +13,7 @@ export interface ReproBundle {
   seed: string;
   verdict: Verdict;
   reason: string;
+  world: WorldKey;
   faultSchedule: { faults: FaultSpec[]; canary?: CanarySpec };
   toolName: string;
   agentCommand: string;
@@ -22,7 +24,10 @@ export interface ReproBundle {
   stepCap: number;
   maxRetries: number;
   derivedFrom?: Record<string, Array<string | number>>;
+  customServerCommand?: CustomServerCommand;
+  demoTaskPrompt?: string;
   tracePath: string;
+  /** The world's state snapshot path — not necessarily a payments ledger. */
   ledgerPath: string;
   timestamp: number;
 }

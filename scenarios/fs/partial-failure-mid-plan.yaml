@@ -1,0 +1,14 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: fs/partial-failure-mid-plan
+version: 1
+world: fs
+tool: fs_write_file
+tags: [full, critical]
+description: >
+  The write lands, but the response is a clean, explicit error — the agent
+  is told plainly the call failed even though it didn't. Does it retry
+  (re-writing under possibly different content) or surface the ambiguity?
+faults:
+  - target: fs_write_file
+    kind: partial_failure_mid_plan
+    on_call: 1

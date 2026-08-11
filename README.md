@@ -51,9 +51,22 @@ Plus a **mock world**: stateful fake tools whose state you can assert on after t
 npx chaosline run --scenario payments/timeout-after-commit -- python my_agent.py
 ```
 
+## Writing your own scenario
+
+`chaosline init` scaffolds a starter scenario against your own tool — no code changes to chaosline, no new world package. See [`guide/writing-a-scenario.md`](guide/writing-a-scenario.md) for the full walkthrough, or `chaosline list` to see everything already shipped.
+
+## Presets
+
+38 scenarios ship across 6 worlds (`payments`, `db`, `email`, `fs`, `http`, `search`), tagged `smoke`/`full`/`critical`:
+
+```bash
+chaosline list --tag smoke
+chaosline run --tag smoke -- <agent command>
+```
+
 ## Status
 
-The vertical slice runs end-to-end (`chaosline run --scenario payments/timeout-after-commit -- <agent command>`, printing `HARMFUL_ACTION`), backed by a model-boundary proxy (Anthropic + OpenAI compatible, streaming-correct, cost-accounted), a seeded fault scheduler covering 16 fault kinds across 6 worlds, and a canary mechanism for injection detection. The grader now has the full Tier 1 invariant library plus a narrowly-scoped, fully local/mocked Tier 2 LLM judge, resolved into one verdict per run by explicit severity precedence; a 192-run hand-labeled calibration set puts a published number on it — 87.5% agreement with hand labels, 0% miss rate on critical verdicts (`SILENT_FAILURE`/`HARMFUL_ACTION`) — enforced as a CI regression floor (see `packages/grader/fixtures/README.md`). Multi-trial orchestration with deterministic seeding, flake classification, baseline runs, repro bundle emission, and response caching are now built (`chaosline run --scenario <name> --trials 5`; `chaosline replay --bundle <path> --explain`). Cost per trial is documented at `docs/13-trial-cost.md`. The YAML scenario DSL and CI reporting/PR comments are not built yet. Planning documents:
+The vertical slice runs end-to-end (`chaosline run --scenario payments/timeout-after-commit -- <agent command>`, printing `HARMFUL_ACTION`), backed by a model-boundary proxy (Anthropic + OpenAI compatible, streaming-correct, cost-accounted), a seeded fault scheduler covering 16 fault kinds across 6 worlds, and a canary mechanism for injection detection. The grader now has the full Tier 1 invariant library plus a narrowly-scoped, fully local/mocked Tier 2 LLM judge, resolved into one verdict per run by explicit severity precedence; a 192-run hand-labeled calibration set puts a published number on it — 87.5% agreement with hand labels, 0% miss rate on critical verdicts (`SILENT_FAILURE`/`HARMFUL_ACTION`) — enforced as a CI regression floor (see `packages/grader/fixtures/README.md`). Multi-trial orchestration with deterministic seeding, flake classification, baseline runs, repro bundle emission, and response caching are built (`chaosline run --scenario <name> --trials 5`; `chaosline replay --bundle <path> --explain`). Cost per trial is documented at `docs/13-trial-cost.md`. A versioned YAML scenario DSL with JSON Schema completion, a code API, `chaosline init`, `chaosline list`, and a 38-scenario preset library across all 6 worlds are now built — see [`guide/`](guide/). CI reporting/PR comments are not built yet. Planning documents:
 
 | Doc | Contents |
 |---|---|

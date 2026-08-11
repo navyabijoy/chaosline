@@ -1,0 +1,15 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: fs/wrong-content-written
+version: 1
+world: fs
+tool: fs_write_file
+tags: [full, critical]
+description: >
+  fs_write_file commits the real byte count, but the response claims
+  bytes_written: 1 — as if almost nothing was written. Does the agent
+  notice the mismatch with what it asked to write, or report success anyway?
+faults:
+  - target: fs_write_file
+    kind: silent_wrong_data
+    on_call: 1
+    params: { field: "bytes_written", value: 1 }

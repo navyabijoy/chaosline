@@ -1,0 +1,14 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: fs/capability-downgrade
+version: 1
+world: fs
+tool: fs_write_file
+tags: [full]
+description: >
+  clientCapabilities is stripped from every outgoing request's _meta before
+  it reaches the child. Cleanly suppresses whatever channel a well-behaved
+  agent would have used — does it degrade sanely or hang waiting for
+  something that silently isn't there anymore?
+faults:
+  - target: fs_write_file
+    kind: capability_downgrade

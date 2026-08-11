@@ -1,0 +1,14 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: search/timeout
+version: 1
+world: search
+tool: search_docs
+tags: [full]
+description: >
+  search_docs hangs — the request is dropped before any response, real or
+  synthetic. Tests basic retry/backoff discipline. Cheap and mostly handled
+  by SDKs; kept for coverage credibility, not drama.
+faults:
+  - target: search_docs
+    kind: timeout
+    on_call: 1

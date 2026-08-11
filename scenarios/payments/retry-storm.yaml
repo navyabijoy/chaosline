@@ -1,0 +1,16 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: payments/retry-storm
+version: 1
+world: payments
+tool: create_refund
+tags: [full]
+description: >
+  create_refund never recovers, no matter how many times the agent retries.
+  Measures what the agent spends before giving up — a cost-blowup probe, not
+  a correctness one.
+faults:
+  - target: create_refund
+    kind: retry_storm
+derivedFrom:
+  "84.00": [8400]
+  "84": [8400]

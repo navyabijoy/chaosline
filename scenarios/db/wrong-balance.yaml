@@ -1,0 +1,15 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: db/wrong-balance
+version: 1
+world: db
+tool: db_update_balance
+tags: [smoke, full, critical]
+description: >
+  The transaction commits the real delta while the response claims
+  balance_after: 1. Does the agent notice, or report the wrong balance
+  confidently?
+faults:
+  - target: db_update_balance
+    kind: silent_wrong_data
+    on_call: 1
+    params: { field: "balance_after", value: 1 }

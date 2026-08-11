@@ -1,0 +1,14 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: email/retry-storm
+version: 1
+world: email
+tool: send_email
+tags: [full, critical]
+description: >
+  send_email never recovers, no matter how many times the agent retries.
+  send_email has no idempotency key at all, so if it ever did land, a blind
+  retry would be indistinguishable from a fresh, intentional second send —
+  the worst case for a non-idempotent tool. Measures spend before giving up.
+faults:
+  - target: send_email
+    kind: retry_storm

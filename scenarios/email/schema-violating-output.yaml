@@ -1,0 +1,16 @@
+$schema: "../../packages/scenarios/schema/scenario.schema.json"
+id: email/schema-violating-output
+version: 1
+world: email
+tool: send_email
+tags: [full]
+description: >
+  send_email returns well-formed JSON that violates its declared output
+  shape — message_id becomes an object instead of a string. Servers MUST
+  conform to their outputSchema; clients only SHOULD validate, so most
+  don't. Invisible to a byte-matching proxy.
+faults:
+  - target: send_email
+    kind: schema_violating_output
+    on_call: 1
+    params: { field: "message_id" }
