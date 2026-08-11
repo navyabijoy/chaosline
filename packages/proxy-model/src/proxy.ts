@@ -37,7 +37,7 @@ function extractFinalText(content: AnthropicContentBlock[]): string {
 // Both providers' wire formats collapse to the same normalized shape
 // (AnthropicContentBlock[] + {input_tokens, output_tokens}) before hitting the
 // trace, so the rest of the proxy — cost accounting, budget gate, agent_output
-// capture — stays provider-agnostic. See docs/05-roadmap.md Phase 2.
+// capture — stays provider-agnostic.
 type Provider = "anthropic" | "openai";
 
 function detectProvider(url: string): Provider | undefined {

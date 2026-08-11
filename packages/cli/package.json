@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@chaosline/core": "*",
+    "@chaosline/faults": "*",
     "@chaosline/grader": "*",
     "@chaosline/proxy-model": "*",
     "@chaosline/shim": "*",

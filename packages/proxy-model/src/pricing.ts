@@ -1,5 +1,4 @@
-// USD/token pricing, per docs/05-roadmap.md Phase 2 "Token and USD accounting."
-// Prices are $ per million tokens. Unknown models fall back to the Sonnet rate
+// USD/token pricing for cost accounting. Prices are $ per million tokens. Unknown models fall back to the Sonnet rate
 // rather than throwing — a missing price entry should degrade the accounting,
 // not crash the proxy mid-run.
 

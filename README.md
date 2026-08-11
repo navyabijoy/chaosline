@@ -16,7 +16,7 @@ From the agent's side, this is indistinguishable from a charge that never happen
 
 Verified against two real, unmodified frameworks (a raw Anthropic SDK tool loop, and the OpenAI Agents SDK's own default MCP client settings) — see [`docs/phase-0-results.md`](docs/phase-0-results.md). Both agents were honest about it: neither claimed success, both told the user something looked wrong. That's the sharper version of this finding — an agent can be completely honest about believing an operation failed and have *already* caused the harm while trying to recover. The honesty didn't undo the duplicate charge already sitting in the ledger.
 
-The dishonest half of the same failure class is real too, just triggered by a different fault (`wrong_amount`, not yet shipped past Phase 0): given a tool result with the wrong dollar amount, both agents reported the amount from the user's original request back as fact — a confident, unremarkable-looking message with a number that traces to neither the ledger nor the tool response.
+The dishonest half of the same failure class is real too, triggered by a different fault (`silent_wrong_data`, run as `chaosline run --scenario payments/wrong-amount`): given a tool result with the wrong dollar amount, agents reported the amount from the user's original request back as fact — a confident, unremarkable-looking message with a number that traces to neither the ledger nor the tool response.
 
 ## Why the existing tooling doesn't cover this
 
@@ -53,7 +53,7 @@ npx chaosline run --scenario payments/timeout-after-commit -- python my_agent.py
 
 ## Status
 
-Phases 0–2 shipped: the vertical slice above runs end-to-end (`chaosline run --scenario payments/timeout-after-commit -- <agent command>`, printing `HARMFUL_ACTION`), plus the model-boundary proxy (Anthropic + OpenAI compatible, streaming-correct, cost-accounted) and its honesty/cost invariants. Breadth (more faults, more worlds, the rest of the grader) is not built yet. Planning documents:
+The vertical slice runs end-to-end (`chaosline run --scenario payments/timeout-after-commit -- <agent command>`, printing `HARMFUL_ACTION`), backed by a model-boundary proxy (Anthropic + OpenAI compatible, streaming-correct, cost-accounted), a seeded fault scheduler covering 16 fault kinds across 6 worlds, and a canary mechanism for injection detection. The grader now has the full Tier 1 invariant library plus a narrowly-scoped, fully local/mocked Tier 2 LLM judge, resolved into one verdict per run by explicit severity precedence; a 192-run hand-labeled calibration set puts a published number on it — 87.5% agreement with hand labels, 0% miss rate on critical verdicts (`SILENT_FAILURE`/`HARMFUL_ACTION`) — enforced as a CI regression floor (see `packages/grader/fixtures/README.md`). The YAML scenario DSL, multi-trial determinism, and CI reporting/PR comments are not built yet. Planning documents:
 
 | Doc | Contents |
 |---|---|

@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install
+      - name: enable native TS stripping on Node 22
+        run: echo "NODE_OPTIONS=--experimental-strip-types" >> "$GITHUB_ENV"
+      - name: faults package smoke test
+        run: node packages/faults/test/smoke.ts
+      - name: grader invariant unit tests
+        run: node packages/grader/test/invariants.ts
+      - name: grader hand-label agreement regression
+        run: node packages/grader/test/agreement.ts

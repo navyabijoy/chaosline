@@ -1,9 +1,9 @@
 // A scripted, local, Anthropic-Messages-API-shaped stand-in for api.anthropic.com.
-// Exists so Phase 2 can be proven end-to-end without spending real API money: it
-// deterministically replays the exact turn sequence recorded for agent (a) in
-// docs/phase-0-results.md (tool_use -> retry tool_use -> honest failure text) so the
-// model-boundary trace can be checked against a result that is already known to be
-// true, instead of a made-up one. This is a test fixture, not a product feature —
+// Exists so the model proxy can be proven end-to-end without spending real API
+// money: it deterministically replays the exact turn sequence recorded for agent (a)
+// in docs/phase-0-results.md (tool_use -> retry tool_use -> honest failure text) so
+// the model-boundary trace can be checked against a result that is already known to
+// be true, instead of a made-up one. This is a test fixture, not a product feature —
 // the proxy itself forwards to a real upstream by default.
 import { createServer } from "node:http";
 
