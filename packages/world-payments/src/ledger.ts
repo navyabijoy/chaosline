@@ -9,8 +9,13 @@ export interface LedgerEntry {
   at_call_number: number;
 }
 
+// The response echoes back the operation it performed. Grading compares the
+// figures an agent reports against the figures a tool actually returned, so a
+// response that omits the amount leaves nothing to compare against.
 export interface RefundResult {
   refund_id: string;
+  order_id: string;
+  amount_cents: number;
   status: "succeeded";
 }
 
@@ -24,7 +29,12 @@ export function createRefund(
   if (idempotency_key) {
     const existing = ledger.find((e) => e.idempotency_key === idempotency_key);
     if (existing) {
-      return { refund_id: existing.refund_id, status: "succeeded" };
+      return {
+        refund_id: existing.refund_id,
+        order_id: existing.order_id,
+        amount_cents: existing.amount_cents,
+        status: "succeeded",
+      };
     }
   }
 
@@ -36,7 +46,7 @@ export function createRefund(
     idempotency_key,
     at_call_number: ledger.length + 1,
   });
-  return { refund_id, status: "succeeded" };
+  return { refund_id, order_id, amount_cents, status: "succeeded" };
 }
 
 export function getLedger(): LedgerEntry[] {

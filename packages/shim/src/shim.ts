@@ -175,12 +175,18 @@ export function runShim(childCommand: string, childArgs: string[]): void {
 
       if (call.postSpec) {
         const outcome = applyPostCall(msg, call.postSpec, canary);
+        // Trace what the agent actually receives, not what the world returned.
+        // The honesty invariants compare an agent's claims against the tool
+        // results it was given, so recording the pre-mutation body would credit
+        // the agent with values it never saw.
+        const delivered =
+          outcome.action === "mutate" ? (outcome.response as any) : outcome.action === "drop" ? undefined : msg;
         trace?.write({
           t: Date.now(),
           kind: "tool_result",
           id: String(msg.id),
-          ok: !msg.error,
-          body: msg.result ?? msg.error,
+          ok: delivered !== undefined && !delivered.error,
+          body: delivered === undefined ? null : delivered.result ?? delivered.error,
           injected: { kind: call.postSpec.kind, tool: call.tool, params: call.postSpec.params },
         });
 
