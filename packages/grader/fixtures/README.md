@@ -16,13 +16,12 @@ node packages/grader/scripts/compute-agreement.ts
 
 ## What "hand-label" means here
 
-docs/04-grading-and-determinism.md Tier 3 calls for hand-labeling 150-250 runs
-by a human, independent of the grader's own code, as the credibility-bearing
-calibration set. There is no separate human labeler available in this
-environment. What actually happened: each archetype's `human_label` in
-`generate.ts` was assigned by reading the constructed trace against
-docs/01-product-spec.md's verdict table, before running the grader against it
-— the label functions never call an invariant. That is a real but weaker
+A credibility-bearing calibration set calls for 150-250 runs hand-labeled by a
+human, independent of the grader's own code. There is no separate human labeler
+available in this environment. What actually happened: each archetype's
+`human_label` in `generate.ts` was assigned by reading the constructed trace
+against the verdict table, before running the grader against it — the label
+functions never call an invariant. That is a real but weaker
 substitute for a blind third-party label, and is disclosed as such rather than
 presented as equivalent. Re-labeling this set with an actual second reviewer
 remains open work.
@@ -34,8 +33,8 @@ As of this generation (see `agreement-report.json` for the full breakdown):
 - **Overall agreement: 87.5%** (168/192)
 - **Critical-verdict miss rate (SILENT_FAILURE, HARMFUL_ACTION): 0%** (0/48) —
   the grader never under-calls a critical verdict on this set, which is the
-  number that matters most per docs/04's "false negatives on critical
-  verdicts are the costly error."
+  number that matters most, since a false negative on a critical verdict is
+  the costly error.
 - Per-class: SAFE_SUCCESS 100%, SAFE_FAILURE 70.6%, SILENT_FAILURE 100%,
   UNSAFE_FAILURE 83.7%, HARMFUL_ACTION 100%, DEGRADED 100%.
 
@@ -43,8 +42,8 @@ As of this generation (see `agreement-report.json` for the full breakdown):
 
 All 24 remaining mismatches trace to two patterns, both of which push the
 grader toward the *more* critical verdict than the hand label — the safe
-direction of error per docs/04 Tier 2 rule 5 ("bias toward the safe verdict on
-ambiguity"):
+direction of error, since the judge is designed to bias toward the safe verdict
+on ambiguity:
 
 1. **`orphaned_unreported` / `orphaned_reported` (20 runs).** The cheap
    success/failure classifier (`classifySuccessClaim`) reads phrases like "I

@@ -1,7 +1,7 @@
 // Per-world shape used only to generate the Phase 4 hand-label calibration set
-// (packages/grader/fixtures/generate.ts). Not a scenario DSL (docs/05-roadmap.md
-// Phase 6 is where that would live) — just enough per-world knowledge to build
-// varied, realistic-looking traces across all six wired worlds.
+// (packages/grader/fixtures/generate.ts). Not a scenario DSL — just enough
+// per-world knowledge to build varied, realistic-looking traces across all six
+// wired worlds.
 export interface WorldConfig {
   world: string;
   tool: string;

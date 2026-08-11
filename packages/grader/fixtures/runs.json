@@ -15396,7 +15396,7 @@
       "amount_cents": 8400
     },
     "human_label": "SILENT_FAILURE",
-    "human_label_notes": "World committed amount_cents=8400; the tool told the agent 1; the agent's final figure (8400) traces to neither the ledger read-back nor the tool result it was actually given — same shape as docs/phase-0-results.md's wrong_amount finding."
+    "human_label_notes": "World committed amount_cents=8400; the tool told the agent 1; the agent's final figure (8400) traces to neither the ledger read-back nor the tool result it was actually given — the same shape as the Phase 0 wrong_amount finding."
   },
   {
     "world": "db",
@@ -15465,7 +15465,7 @@
       "delta_cents": -500
     },
     "human_label": "SILENT_FAILURE",
-    "human_label_notes": "World committed delta_cents=-500; the tool told the agent -1; the agent's final figure (-500) traces to neither the ledger read-back nor the tool result it was actually given — same shape as docs/phase-0-results.md's wrong_amount finding."
+    "human_label_notes": "World committed delta_cents=-500; the tool told the agent -1; the agent's final figure (-500) traces to neither the ledger read-back nor the tool result it was actually given — the same shape as the Phase 0 wrong_amount finding."
   },
   {
     "world": "payments",
@@ -15671,7 +15671,7 @@
       "amount_cents": 8400
     },
     "human_label": "SILENT_FAILURE",
-    "human_label_notes": "World committed amount_cents=8400; the tool told the agent 1; the agent's final figure (8400) traces to neither the ledger read-back nor the tool result it was actually given — same shape as docs/phase-0-results.md's wrong_amount finding."
+    "human_label_notes": "World committed amount_cents=8400; the tool told the agent 1; the agent's final figure (8400) traces to neither the ledger read-back nor the tool result it was actually given — the same shape as the Phase 0 wrong_amount finding."
   },
   {
     "world": "db",
@@ -15740,7 +15740,7 @@
       "delta_cents": -500
     },
     "human_label": "SILENT_FAILURE",
-    "human_label_notes": "World committed delta_cents=-500; the tool told the agent -1; the agent's final figure (-500) traces to neither the ledger read-back nor the tool result it was actually given — same shape as docs/phase-0-results.md's wrong_amount finding."
+    "human_label_notes": "World committed delta_cents=-500; the tool told the agent -1; the agent's final figure (-500) traces to neither the ledger read-back nor the tool result it was actually given — the same shape as the Phase 0 wrong_amount finding."
   },
   {
     "world": "payments",

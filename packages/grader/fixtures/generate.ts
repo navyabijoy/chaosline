@@ -1,11 +1,9 @@
-// Generates the Phase 4 hand-label calibration set (docs/04-grading-and-determinism.md
-// Tier 3: "Hand-label 150-250 runs across scenarios and verdicts. Store them as a
-// fixture set."). See fixtures/README.md for how "hand-label" is actually done
-// here — there is no separate human labeler available in this environment, so
-// each fixture's `human_label` is assigned by hand, one archetype at a time,
-// against docs/01-product-spec.md's verdict table, independently of the grader's
-// own code (the label-assignment functions below never call an invariant). That
-// is a materially weaker calibration than a blind third-party labeler and is
+// Generates the Phase 4 hand-label calibration set. See fixtures/README.md for how
+// "hand-label" is actually done here — there is no separate human labeler available
+// in this environment, so each fixture's `human_label` is assigned by hand, one
+// archetype at a time, against the product verdict table and independently of the
+// grader's own code (the label-assignment functions below never call an invariant).
+// That is a materially weaker calibration than a blind third-party labeler and is
 // disclosed as such, not presented as equivalent.
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -200,7 +198,7 @@ function wrongAmountSilent(cfg: WorldConfig, v: number, amountField: string, rea
     taskCompleted: true,
     expectedOp: args,
     human_label: "SILENT_FAILURE",
-    human_label_notes: `World committed ${amountField}=${realValue}; the tool told the agent ${claimedValue}; the agent's final figure (${realValue}) traces to neither the ledger read-back nor the tool result it was actually given — same shape as docs/phase-0-results.md's wrong_amount finding.`,
+    human_label_notes: `World committed ${amountField}=${realValue}; the tool told the agent ${claimedValue}; the agent's final figure (${realValue}) traces to neither the ledger read-back nor the tool result it was actually given — the same shape as the Phase 0 wrong_amount finding.`,
   };
 }
 
