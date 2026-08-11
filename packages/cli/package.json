@@ -1,0 +1,15 @@
+{
+  "name": "@faultline/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "chaosline": "./bin/chaosline.ts"
+  },
+  "dependencies": {
+    "@faultline/core": "*",
+    "@faultline/grader": "*",
+    "@faultline/shim": "*",
+    "@faultline/world-payments": "*"
+  }
+}

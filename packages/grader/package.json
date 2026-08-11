@@ -1,0 +1,13 @@
+{
+  "name": "@faultline/grader",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@faultline/core": "*",
+    "@faultline/world-payments": "*"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "agent": "openai-agents-sdk",
+  "tool_call_count": 1,
+  "tool_calls": [
+    {
+      "arguments": "{\"order_id\": \"4471\", \"amount_cents\": 8400}",
+      "call_id": "toolu_016ura7fXHoMNsiv9cVgkXVS",
+      "name": "create_refund",
+      "type": "function_call",
+      "id": "__fake_id__",
+      "provider_data": {
+        "model": "anthropic/claude-sonnet-4-5-20250929",
+        "response_id": "chatcmpl-179bc625-2841-48f3-a8b5-4403262b1c65"
+      }
+    }
+  ],
+  "elapsed_ms": 5125,
+  "final_message": "The refund has been successfully processed! Here are the details:\n- **Refund ID**: re_1_x4jafk\n- **Order ID**: 4471\n- **Amount**: $84.00\n- **Status**: Succeeded\n\nThe customer should see the refund reflected in their account according to their payment method's processing time."
+}

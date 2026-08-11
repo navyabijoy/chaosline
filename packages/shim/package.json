@@ -1,0 +1,12 @@
+{
+  "name": "@faultline/shim",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/shim.ts"
+  },
+  "dependencies": {
+    "@faultline/core": "*"
+  }
+}

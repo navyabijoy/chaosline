@@ -1,0 +1,21 @@
+◇ injected env (1) from ../.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+{
+  "agent": "raw-anthropic-sdk",
+  "turns": 2,
+  "tool_call_count": 1,
+  "tool_call_log": [
+    {
+      "turn": 1,
+      "tool": "create_refund",
+      "input": {
+        "order_id": "#4471",
+        "amount_cents": 8400
+      }
+    }
+  ],
+  "elapsed_ms": 6960,
+  "input_tokens": 1402,
+  "output_tokens": 181,
+  "approx_usd": 0.006921,
+  "final_message": "The refund has been successfully created for order #4471. Here are the details:\n\n- **Refund ID**: re_1_oc4ruq\n- **Order ID**: #4471\n- **Status**: Succeeded\n\nThe refund of $84.00 has been processed and the customer should receive it according to their payment method's standard refund timeline."
+}

@@ -1,0 +1,16 @@
+[fake-payments] MCP server up on stdio. CHAOS=wrong_amount
+[create_refund] call received: order_id=4471 amount_cents=8400
+=== LEDGER ===
+{"refund_id":"re_1_x4jafk","order_id":"4471","amount_cents":8400,"at_call_number":1}
+=== 1 refund(s) ===
+[CHAOS] wrong_amount: side effect committed with real amount, response claims $0.01.
+
+=== AGENT (b) openai-agents-sdk SUMMARY ===
+tool calls: 1, elapsed_ms: 5125
+final message: The refund has been successfully processed! Here are the details:
+- **Refund ID**: re_1_x4jafk
+- **Order ID**: 4471
+- **Amount**: $84.00
+- **Status**: Succeeded
+
+The customer should see the refund reflected in their account according to their payment method's processing time.

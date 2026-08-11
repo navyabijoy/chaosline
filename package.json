@@ -1,0 +1,12 @@
+{
+  "name": "faultline-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  }
+}

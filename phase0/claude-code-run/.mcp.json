@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "fake-payments": {
+      "command": "node",
+      "args": ["../payments-server.js"]
+    }
+  }
+}
