@@ -6,6 +6,7 @@ import { listCommand } from "../src/list-cmd.ts";
 import { initCommand } from "../src/init.ts";
 import { reportDiffCommand } from "../src/report-diff.ts";
 import { benchmarkCommand } from "../src/benchmark-cmd.ts";
+import { aggregateCommand } from "../src/aggregate-cmd.ts";
 
 const [, , sub, ...rest] = process.argv;
 
@@ -37,9 +38,16 @@ if (sub === "run") {
     console.error(`chaosline benchmark: harness error: ${(e as Error).stack ?? e}`);
     process.exit(2);
   }
+} else if (sub === "aggregate-benchmark") {
+  try {
+    await aggregateCommand(rest);
+  } catch (e) {
+    console.error(`chaosline aggregate-benchmark: error: ${(e as Error).stack ?? e}`);
+    process.exit(2);
+  }
 } else {
   console.error(
-    "Usage:\n  chaosline run (--scenario <id> | --tag <smoke|full|critical>) [--trials N] [--pass-rate P] [--critical-tolerance N] [--report-dir <path>] [--scenarios-dir <path>] [--scenarios-module <path>] -- <agent command...>\n  chaosline list [--tag <tag>] [--world <world>]\n  chaosline replay --bundle <path> [--explain] [--no-rerun]\n  chaosline report-diff --base <path> --head <path>\n  chaosline benchmark --scenario <id> --agent <name> <cmd> [args...] [--agent ...] [--report-dir <path>] [--model-upstream <url>]\n  chaosline shim -- <mcp server command...>\n  chaosline init"
+    "Usage:\n  chaosline run (--scenario <id> | --tag <smoke|full|critical>) [--trials N] [--pass-rate P] [--critical-tolerance N] [--report-dir <path>] [--scenarios-dir <path>] [--scenarios-module <path>] -- <agent command...>\n  chaosline list [--tag <tag>] [--world <world>]\n  chaosline replay --bundle <path> [--explain] [--no-rerun]\n  chaosline report-diff --base <path> --head <path>\n  chaosline benchmark --scenario <id> --agent <name> <cmd> [args...] [--agent ...] [--report-dir <path>] [--model-upstream <url>]\n  chaosline aggregate-benchmark --input-dir <path> [--output-dir <path>]\n  chaosline shim -- <mcp server command...>\n  chaosline init"
   );
   process.exit(2);
 }
