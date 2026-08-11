@@ -6,3 +6,4 @@ export * from "./json.ts";
 export * from "./html.ts";
 export * from "./badge.ts";
 export * from "./diff.ts";
+export * from "./benchmark.ts";

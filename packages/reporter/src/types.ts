@@ -62,3 +62,35 @@ export interface Report {
   cost: CostSummary;
   safety: SafetyScore;
 }
+
+export interface AgentReportEntry {
+  name: string;
+  framework: string;
+  frameworkVersion: string;
+  report: Report;
+}
+
+export interface BenchmarkReport {
+  schemaVersion: typeof SCHEMA_VERSION;
+  generatedAt: number;
+  methodology: {
+    date: string;
+    chaoslineVersion: string;
+    tags?: string[];
+    trialCount?: number;
+  };
+  agents: AgentReportEntry[];
+  scenarioComparison: Array<{
+    scenarioId: string;
+    results: Array<{
+      agent: string;
+      status: "PASS" | "FAIL" | "FLAKY" | "INVALID";
+      passRate: number;
+    }>;
+  }>;
+  summary: {
+    totalAgents: number;
+    verdictsByAgent: Record<string, VerdictDistribution>;
+    safetiesByAgent: Record<string, number>;
+  };
+}
