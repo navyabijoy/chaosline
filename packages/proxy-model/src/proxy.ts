@@ -2,17 +2,19 @@
 // test points ANTHROPIC_BASE_URL at this server instead of api.anthropic.com; every
 // byte forwards to the real (or, for local demos, a scripted mock) upstream
 // unmodified, while a side channel reconstructs usage, cost, and the agent's final
-// output for the trace. See docs/02-architecture.md "Mode C: model proxy".
+// output for the trace.
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { Readable } from "node:stream";
 import { TraceWriter } from "@chaosline/core";
 import { costUsd, type TokenUsage } from "./pricing.ts";
+import { ResponseCache, type CachedResponse } from "./response-cache.ts";
 
 export interface ModelProxyOptions {
   upstream: string;
   budgetUsd: number;
   tracePath?: string;
   port?: number;
+  cache?: ResponseCache;
 }
 
 export interface ModelProxyHandle {
@@ -21,7 +23,7 @@ export interface ModelProxyHandle {
   getTotalCostUsd(): number;
 }
 
-interface AnthropicContentBlock {
+export interface AnthropicContentBlock {
   type: string;
   text?: string;
   [key: string]: unknown;
@@ -142,19 +144,22 @@ export async function startModelProxy(opts: ModelProxyOptions): Promise<ModelPro
     const provider = parsedBody ? detectProvider(req.url ?? "") : undefined;
     const isModelCall = provider !== undefined;
 
+    // Normalized tools shape (same as trace representation)
+    const normalizedTools =
+      provider === "openai"
+        ? (parsedBody?.tools ?? []).map((t: any) => ({
+            name: t.function?.name,
+            description: t.function?.description,
+            inputSchema: t.function?.parameters,
+          }))
+        : parsedBody?.tools ?? [];
+
     if (isModelCall) {
       trace?.write({
         t: Date.now(),
         kind: "model_request",
         messages: parsedBody.messages ?? [],
-        tools:
-          provider === "openai"
-            ? (parsedBody.tools ?? []).map((t: any) => ({
-                name: t.function?.name,
-                description: t.function?.description,
-                inputSchema: t.function?.parameters,
-              }))
-            : parsedBody.tools ?? [],
+        tools: normalizedTools,
       });
 
       if (totalCostUsd >= opts.budgetUsd) {
@@ -187,6 +192,26 @@ export async function startModelProxy(opts: ModelProxyOptions): Promise<ModelPro
       // looks like a chaos fault instead of a proxy bug.
       if (HOP_BY_HOP_REQUEST_HEADERS.has(key) || key === "host" || key === "content-length") continue;
       headers.set(key, Array.isArray(value) ? value.join(", ") : value);
+    }
+
+    // Check cache before fetching (for non-streaming requests only)
+    let cachedResponse: CachedResponse | undefined;
+    let cacheKey: string | undefined;
+    const isRequestStreaming = parsedBody?.stream === true;
+    if (isModelCall && provider && opts.cache && !isRequestStreaming) {
+      // Only cache non-streaming model calls. Compute cache key from normalized request.
+      cacheKey = opts.cache.key(model, provider, parsedBody.messages ?? [], normalizedTools);
+      cachedResponse = opts.cache.get(cacheKey);
+    }
+
+    if (cachedResponse) {
+      // Cache hit: return cached response without calling upstream
+      res.writeHead(cachedResponse.status, cachedResponse.headers);
+      res.end(cachedResponse.bodyBuf);
+      // Record the cache hit in trace with $0 cost
+      const wouldBeCost = costUsd(model, cachedResponse.usage);
+      recordModelResponse(model, cachedResponse.content, cachedResponse.usage, true, wouldBeCost);
+      return;
     }
 
     // Forward client disconnects upstream — otherwise a client that gives up
@@ -239,28 +264,56 @@ export async function startModelProxy(opts: ModelProxyOptions): Promise<ModelPro
       for await (const chunk of upstreamResp.body as any) bodyChunks.push(Buffer.from(chunk));
       const bodyBuf = Buffer.concat(bodyChunks);
       res.end(bodyBuf);
+
+      let content: AnthropicContentBlock[] = [];
+      let usage: TokenUsage = {};
       try {
         const json = JSON.parse(bodyBuf.toString("utf8"));
         if (provider === "openai") {
           const message = json.choices?.[0]?.message;
-          if (message) recordModelResponse(model, openAiMessageToBlocks(message), openAiUsageToUsage(json.usage));
+          if (message) {
+            content = openAiMessageToBlocks(message);
+            usage = openAiUsageToUsage(json.usage);
+          }
         } else if (json.content) {
-          recordModelResponse(model, json.content, json.usage ?? {});
+          content = json.content;
+          usage = json.usage ?? {};
         }
       } catch {
-        // Upstream returned a non-JSON or error body — nothing to record.
+        // Upstream returned a non-JSON or error body — nothing to cache or record.
+      }
+
+      recordModelResponse(model, content, usage);
+
+      // Cache non-streaming response for future trials (response wasn't streaming, so we cached the key)
+      if (cacheKey && content.length > 0 && upstreamResp.status === 200) {
+        const cached: CachedResponse = {
+          status: upstreamResp.status,
+          headers: resHeaders,
+          bodyBuf,
+          content,
+          usage,
+        };
+        opts.cache?.set(cacheKey, cached);
       }
     }
   }
 
-  function recordModelResponse(model: string, content: AnthropicContentBlock[], usage: TokenUsage): void {
-    const cost = costUsd(model, usage);
+  function recordModelResponse(
+    model: string,
+    content: AnthropicContentBlock[],
+    usage: TokenUsage,
+    cached?: boolean,
+    wouldBeCost?: number
+  ): void {
+    const cost = cached ? 0 : costUsd(model, usage);
     totalCostUsd += cost;
     trace?.write({
       t: Date.now(),
       kind: "model_response",
       content,
       usage: { ...usage, cost_usd: cost },
+      ...(cached && { cached: true, wouldBeCostUsd: wouldBeCost }),
     });
 
     const toolUse = content.some((b) => b.type === "tool_use");
