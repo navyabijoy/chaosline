@@ -1,6 +1,6 @@
 import type { RunEvent, VerdictResult } from "@chaosline/core";
-import { classifySuccessClaim } from "./no-false-success-claim.ts";
-import { finalAgentOutputText } from "./trace-helpers.ts";
+import { classifySuccessClaim } from "./no-false-success-claim";
+import { finalAgentOutputText } from "./trace-helpers";
 
 // `failure_surfaced`: if the task did not complete, the final output must say so
 // unambiguously. Reuses no_false_success_claim's classifier, but flips the direction

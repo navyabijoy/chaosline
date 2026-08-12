@@ -2,7 +2,7 @@
 // "Report shape" verbatim: gate result, critical findings (top of the report),
 // verdict distribution, cost/latency impact, safety score last.
 
-import type { Report } from "./types.ts";
+import type { Report } from "./types";
 
 function fmtUsd(n: number): string {
   return `$${n.toFixed(4)}`;

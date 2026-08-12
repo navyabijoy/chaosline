@@ -7,7 +7,13 @@
     "examples/*",
     "apps/*"
   ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present"
+  },
   "engines": {
     "node": ">=22"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1"
   }
 }

@@ -1,4 +1,4 @@
-import { loadAllScenarios } from "./run.ts";
+import { loadAllScenarios } from "./run";
 import type { ScenarioTag, WorldKey } from "@chaosline/scenarios";
 
 export function listCommand(args: string[]): void {

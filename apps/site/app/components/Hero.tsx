@@ -28,29 +28,29 @@ function WithoutCard() {
             <span className="text-[14px]">🤖</span>
           </div>
           <div className="flex flex-col gap-3">
-             <div className="text-[#374151] text-[14px] leading-relaxed">
-               I apologize, but I'm experiencing technical difficulties with the refund system - it's timing out when I try to process the refund for order #4471 for $84.00. This could be due to a temporary system issue.
-               <br/><br/>
-               Please try again in a few moments, or contact technical support if the issue persists.
-             </div>
-             
-             {/* Subtle disaster footprint */}
-             <div className="border-t border-[#F3F4F6] pt-3 mt-1">
-               <div className="font-mono text-[11px] text-[#9CA3AF] space-y-1">
-                 <div>status = <span className="text-[#DC2626]">failed</span></div>
-                 <div>source = <span className="text-[#1C1C1E]">unknown</span></div>
-                 <div>impact = <span className="text-[#1C1C1E]">customer charged $252</span></div>
-               </div>
-             </div>
+            <div className="text-[#374151] text-[14px] leading-relaxed">
+              I apologize, but I'm experiencing technical difficulties with the refund system - it's timing out when I try to process the refund for order #4471 for $84.00. This could be due to a temporary system issue.
+              <br /><br />
+              Please try again in a few moments, or contact technical support if the issue persists.
+            </div>
+
+            {/* Subtle disaster footprint */}
+            <div className="border-t border-[#F3F4F6] pt-3 mt-1">
+              <div className="font-mono text-[11px] text-[#9CA3AF] space-y-1">
+                <div>status = <span className="text-[#DC2626]">failed</span></div>
+                <div>source = <span className="text-[#1C1C1E]">unknown</span></div>
+                <div>impact = <span className="text-[#1C1C1E]">customer charged $252</span></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      
+
       <div className="px-6 py-4 bg-[#FAFAFA] border-t border-[#F3F4F6]">
-         <p className="text-[12px] text-[#6B7280] flex items-center gap-2">
-           <span className="w-4 h-4 rounded-full bg-[#F3F4F6] flex items-center justify-center text-[10px]">✕</span>
-           No safety net. Silent retries. Irreversible side-effects.
-         </p>
+        <p className="text-[12px] text-[#6B7280] flex items-center gap-2">
+          <span className="w-4 h-4 rounded-full bg-[#F3F4F6] flex items-center justify-center text-[10px]">✕</span>
+          No safety net. Silent retries. Irreversible side-effects.
+        </p>
       </div>
     </div>
   );
@@ -74,7 +74,7 @@ function WithCard() {
       <div className="flex-1 p-6 space-y-6">
         {/* User bubble */}
         <div className="flex justify-end">
-           <div className="bg-[#F3F4F6] rounded-[18px] rounded-tr-[4px] px-5 py-3 max-w-[85%] text-[#1C1C1E] text-[14px]">
+          <div className="bg-[#F3F4F6] rounded-[18px] rounded-tr-[4px] px-5 py-3 max-w-[85%] text-[#1C1C1E] text-[14px]">
             Refund order #4471 — $84.00
           </div>
         </div>
@@ -85,37 +85,37 @@ function WithCard() {
             <span className="text-white font-bold text-[12px]">C</span>
           </div>
           <div className="flex flex-col gap-3 w-full">
-             <div className="text-[#374151] text-[14px] leading-relaxed">
-               Agent failed safe execution constraints. Evaluation captured.
-             </div>
-             
-             {/* Structured Evaluation Block */}
-             <div className="border border-[#E5E7EB] rounded-[12px] bg-[#FAFAFA] p-4 font-mono text-[12px] w-full mt-2">
-                <div className="grid grid-cols-[80px_1fr] gap-y-2">
-                   <div className="text-[#6B7280]">fault</div>
-                   <div className="text-[#1C1C1E]">= timeout_after_commit</div>
-                   
-                   <div className="text-[#6B7280]">retries</div>
-                   <div className="text-[#1C1C1E]">= 3 detected</div>
-                   
-                   <div className="text-[#6B7280]">invariant</div>
-                   <div className="text-[#DC2626]">= ledger.length === 3, expected 1</div>
-                   
-                   <div className="text-[#6B7280]">verdict</div>
-                   <div className="text-[#1C1C1E] flex items-center gap-2">
-                     = <span className="bg-[#FEE2E2] text-[#DC2626] px-1.5 py-0.5 rounded-[4px] font-bold text-[10px]">HARMFUL_ACTION</span>
-                   </div>
+            <div className="text-[#374151] text-[14px] leading-relaxed">
+              Agent failed safe execution constraints. Evaluation captured.
+            </div>
+
+            {/* Structured Evaluation Block */}
+            <div className="border border-[#E5E7EB] rounded-[12px] bg-[#FAFAFA] p-4 font-mono text-[12px] w-full mt-2">
+              <div className="grid grid-cols-[80px_1fr] gap-y-2">
+                <div className="text-[#6B7280]">fault</div>
+                <div className="text-[#1C1C1E]">= timeout_after_commit</div>
+
+                <div className="text-[#6B7280]">retries</div>
+                <div className="text-[#1C1C1E]">= 3 detected</div>
+
+                <div className="text-[#6B7280]">invariant</div>
+                <div className="text-[#DC2626]">= ledger.length === 3, expected 1</div>
+
+                <div className="text-[#6B7280]">verdict</div>
+                <div className="text-[#1C1C1E] flex items-center gap-2">
+                  = <span className="bg-[#FEE2E2] text-[#DC2626] px-1.5 py-0.5 rounded-[4px] font-bold text-[10px]">HARMFUL_ACTION</span>
                 </div>
-             </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <div className="px-6 py-4 bg-[#FAFAFA] border-t border-[#F3F4F6]">
-         <p className="text-[12px] text-[#34C759] flex items-center gap-2 font-medium">
-           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-           Exit 1. PR blocked. Fix before deployment.
-         </p>
+        <p className="text-[12px] text-[#34C759] flex items-center gap-2 font-medium">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          Exit 1. PR blocked. Fix before deployment.
+        </p>
       </div>
     </div>
   );
@@ -181,7 +181,7 @@ export default function Hero() {
 
         {/* ── Top section: two-column ── */}
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-10 lg:gap-16 mb-16 animate-slide-up" style={{ animationFillMode: "both" }}>
-          
+
           {/* Left: Badge + headline + actions */}
           <div className="flex-1 max-w-[600px]">
             {/* Badge */}
@@ -224,8 +224,8 @@ export default function Hero() {
             style={{ animationDelay: "80ms", animationFillMode: "both" }}
           >
             <p className="text-[16px] text-[#9CA3AF] leading-[1.7] font-[450]">
-  Inject real failures before you ship and uncover bugs your tests miss. No code changes, any MCP compatible agent.
-</p>
+              Inject real failures before you ship and uncover bugs your tests miss. No code changes, any MCP compatible agent.
+            </p>
           </div>
         </div>
 

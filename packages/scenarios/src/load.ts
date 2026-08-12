@@ -1,8 +1,8 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { parse as parseYaml } from "yaml";
-import { ScenarioZ } from "./schema.ts";
-import type { Scenario } from "./types.ts";
+import { ScenarioZ } from "./schema";
+import type { Scenario } from "./types";
 
 export function loadScenarioFile(path: string): Scenario {
   const raw = parseYaml(readFileSync(path, "utf8"));

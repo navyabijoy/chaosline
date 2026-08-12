@@ -30,7 +30,7 @@ import {
   terminated,
 } from "@chaosline/grader";
 import type { CanarySpec, FaultSpec } from "@chaosline/faults";
-import type { ReproBundle } from "./repro-bundle.ts";
+import type { ReproBundle } from "./repro-bundle";
 import { startModelProxy, ResponseCache } from "@chaosline/proxy-model";
 import { seededRoll } from "@chaosline/faults";
 import {
@@ -44,10 +44,17 @@ import {
   type CustomServerCommand,
 } from "@chaosline/scenarios";
 
-// Presets shipped with chaosline live at the repo root's scenarios/ directory.
+// Presets ship inside dist/presets (copied from the repo root's scenarios/ dir at
+// build time — see scripts/copy-presets.mjs) so they're included in the published
+// package. In the monorepo (running from src/ via tsx, before a build), fall back
+// to the repo root directly.
 // A team's own ./scenarios (relative to CWD) is loaded on top and overrides any
 // preset with the same id, so a team can fork a preset without editing this repo.
-const PACKAGED_SCENARIOS_DIR = fileURLToPath(new URL("../../../scenarios", import.meta.url));
+const BUNDLED_PRESETS_DIR = fileURLToPath(new URL("./presets", import.meta.url));
+const MONOREPO_SCENARIOS_DIR = fileURLToPath(new URL("../../../scenarios", import.meta.url));
+const PACKAGED_SCENARIOS_DIR = existsSync(BUNDLED_PRESETS_DIR)
+  ? BUNDLED_PRESETS_DIR
+  : MONOREPO_SCENARIOS_DIR;
 
 function loadAllScenarios(scenariosDirOverride?: string): Map<string, Scenario> {
   const merged = new Map<string, Scenario>();
@@ -206,7 +213,11 @@ export async function runSingleTrial(input: SingleTrialInput): Promise<TrialResu
     serverCommand = customServerCommand.command;
     serverArgs = customServerCommand.args;
   } else {
-    const worldBinPath = fileURLToPath(import.meta.resolve(adapter.binSpecifier));
+    const { existsSync } = await import("node:fs");
+    let worldBinPath = fileURLToPath(new URL(`./world-${adapter.serverKey}.js`, import.meta.url));
+    if (!existsSync(worldBinPath)) {
+      worldBinPath = fileURLToPath(import.meta.resolve(adapter.binSpecifier));
+    }
     serverCommand = "node";
     serverArgs = [worldBinPath];
   }

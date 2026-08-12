@@ -1,1 +1,1 @@
-export * from "./outbox.ts";
+export * from "./outbox";

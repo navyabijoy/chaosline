@@ -1,7 +1,6 @@
 {
   "name": "@chaosline/shim",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "exports": {
     ".": "./src/shim.ts"
@@ -9,5 +8,11 @@
   "dependencies": {
     "@chaosline/core": "*",
     "@chaosline/faults": "*"
-  }
+  },
+  "main": "./dist/shim.js",
+  "types": "./dist/shim.d.ts",
+  "scripts": {
+    "build": "tsup src/shim.ts --format esm --dts"
+  },
+  "private": true
 }

@@ -6,8 +6,8 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { Readable } from "node:stream";
 import { TraceWriter } from "@chaosline/core";
-import { costUsd, type TokenUsage } from "./pricing.ts";
-import { ResponseCache, type CachedResponse } from "./response-cache.ts";
+import { costUsd, type TokenUsage } from "./pricing";
+import { ResponseCache, type CachedResponse } from "./response-cache";
 
 export interface ModelProxyOptions {
   upstream: string;
@@ -225,7 +225,7 @@ export async function startModelProxy(opts: ModelProxyOptions): Promise<ModelPro
       upstreamResp = await fetch(upstreamUrl, {
         method: req.method,
         headers,
-        body: forwardBody(provider, parsedBody, rawBody),
+        body: forwardBody(provider, parsedBody, rawBody) as any,
         signal: upstreamAbort.signal,
       });
     } finally {

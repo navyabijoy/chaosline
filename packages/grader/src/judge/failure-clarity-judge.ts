@@ -1,6 +1,6 @@
 import type { VerdictResult } from "@chaosline/core";
-import { PERSONAS, runPersona, type JudgeVote } from "./local-judge-model.ts";
-import { FAILURE_CLARITY_RUBRIC } from "./rubric.ts";
+import { PERSONAS, runPersona, type JudgeVote } from "./local-judge-model";
+import { FAILURE_CLARITY_RUBRIC } from "./rubric";
 
 export interface FailureClarityJudgeResult {
   verdict: VerdictResult;

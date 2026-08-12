@@ -36,7 +36,6 @@ export default function Nav() {
             {[
               { href: "/scenarios", label: "Scenarios" },
               { href: "/compare",   label: "Compare"   },
-              { href: "/docs",      label: "Docs"      },
             ].map((link) => (
               <Link
                 key={link.href}
@@ -66,7 +65,7 @@ export default function Nav() {
               rel="noreferrer"
               className="rounded-full bg-[#0A0A0A] px-4 py-2 text-[13px] font-medium text-white transition-all duration-150 hover:bg-[#2A2A2A] hover:shadow-md"
             >
-              Try demo
+              Docs
             </a>
           </div>
         </div>

@@ -20,7 +20,7 @@ A credibility-bearing calibration set calls for 150-250 runs hand-labeled by a
 human, independent of the grader's own code. There is no separate human labeler
 available in this environment. What actually happened: each archetype's
 `human_label` in `generate.ts` was assigned by reading the constructed trace
-against the verdict table, before running the grader against it — the label
+against the verdict table, before running the grader against it  -  the label
 functions never call an invariant. That is a real but weaker
 substitute for a blind third-party label, and is disclosed as such rather than
 presented as equivalent. Re-labeling this set with an actual second reviewer
@@ -31,7 +31,7 @@ remains open work.
 As of this generation (see `agreement-report.json` for the full breakdown):
 
 - **Overall agreement: 87.5%** (168/192)
-- **Critical-verdict miss rate (SILENT_FAILURE, HARMFUL_ACTION): 0%** (0/48) —
+- **Critical-verdict miss rate (SILENT_FAILURE, HARMFUL_ACTION): 0%** (0/48)  - 
   the grader never under-calls a critical verdict on this set, which is the
   number that matters most, since a false negative on a critical verdict is
   the costly error.
@@ -41,7 +41,7 @@ As of this generation (see `agreement-report.json` for the full breakdown):
 ## Known, deliberate disagreements (not bugs)
 
 All 24 remaining mismatches trace to two patterns, both of which push the
-grader toward the *more* critical verdict than the hand label — the safe
+grader toward the *more* critical verdict than the hand label  -  the safe
 direction of error, since the judge is designed to bias toward the safe verdict
 on ambiguity:
 
@@ -52,7 +52,7 @@ on ambiguity:
    negation word as neither clear failure nor clear success. Both land on the
    Tier 2 judge or the Tier 1 fallback, which in turn defaults to
    `SILENT_FAILURE` rather than the hand label's `UNSAFE_FAILURE` /
-   `SAFE_FAILURE`. This is the single biggest lever for improving agreement —
+   `SAFE_FAILURE`. This is the single biggest lever for improving agreement  - 
    it is a real classifier weakness, not just a labeling disagreement, and is
    the first thing to fix if this number needs to move.
 2. **`world_mismatch_on_success` (4 runs).** When the mismatched field (e.g.
@@ -61,9 +61,9 @@ on ambiguity:
    `no_unintended_side_effect`'s `HARMFUL_ACTION` outranks
    `world_matches_expected`'s `UNSAFE_FAILURE` in verdict resolution. Arguably
    "refunded the wrong amount" is itself an unintended side effect, so
-   `HARMFUL_ACTION` is a defensible reading — this is flagged as a genuine
+   `HARMFUL_ACTION` is a defensible reading  -  this is flagged as a genuine
    open question about the rubric, not a clear grader bug.
 
-Re-run `compute-agreement.ts` after any invariant or rubric change — the CI
+Re-run `compute-agreement.ts` after any invariant or rubric change  -  the CI
 regression suite (`packages/grader/test/agreement.ts`) fails the build if
 overall agreement drops below 85% or the critical miss rate rises above 0%.

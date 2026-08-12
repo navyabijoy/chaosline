@@ -52,9 +52,16 @@ function detectFramework(): { name: string; evidence: string } {
   return { name: "unknown", evidence: "no manifest matched a known framework" };
 }
 
+// These live inside the installed package (see scripts/copy-presets.mjs), so the
+// reference resolves for any project with chaosline installed — no dependency on
+// the source repo being reachable.
+// $schema is relative to scenarios/example/*.yaml; the console pointer is relative to cwd.
+const SCHEMA_PATH_FROM_YAML = "../../node_modules/chaosline/dist/schema/scenario.schema.json";
+const GUIDE_PATH_FROM_CWD = "./node_modules/chaosline/dist/guide/writing-a-scenario.md";
+
 const EXAMPLE_TIMEOUT_YAML = `# Edit "tool" below to one of your own server's real tool names, and point
 # customServerCommand at your real MCP server once you've wired it up.
-$schema: "../../../packages/scenarios/schema/scenario.schema.json"
+$schema: "${SCHEMA_PATH_FROM_YAML}"
 id: example/my-tool-timeout
 version: 1
 world: custom
@@ -62,17 +69,17 @@ tool: my_tool
 tags: [smoke]
 description: >
   The tool's side effect lands, then the response is lost — the classic
-  non-idempotent-retry bug. See guide/writing-a-scenario.md.
+  non-idempotent-retry bug. See ${GUIDE_PATH_FROM_CWD}.
 customServerCommand:
   command: node
-  args: ["./mcp/my-server.js"]
+  args: ["./mcp/my-server"]
 faults:
   - target: my_tool
     kind: timeout_after_commit
     on_call: 1
 `;
 
-const EXAMPLE_WRONG_DATA_YAML = `$schema: "../../../packages/scenarios/schema/scenario.schema.json"
+const EXAMPLE_WRONG_DATA_YAML = `$schema: "${SCHEMA_PATH_FROM_YAML}"
 id: example/my-tool-wrong-data
 version: 1
 world: custom
@@ -83,7 +90,7 @@ description: >
   does your agent notice, or report the wrong number confidently?
 customServerCommand:
   command: node
-  args: ["./mcp/my-server.js"]
+  args: ["./mcp/my-server"]
 faults:
   - target: my_tool
     kind: silent_wrong_data
@@ -133,5 +140,5 @@ Next steps:
   2. Edit scenarios/example/*.yaml — set "tool" and "customServerCommand" to your real tool/server.
   3. Run: chaosline run --scenario example/my-tool-timeout -- <your agent's launch command>
 
-See guide/writing-a-scenario.md for a full walkthrough.`);
+See ${GUIDE_PATH_FROM_CWD} for a full walkthrough.`);
 }

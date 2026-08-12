@@ -5,7 +5,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { searchDocs, getQueryLog } from "../corpus.ts";
+import { searchDocs, getQueryLog } from "../corpus";
 import { writeFileSync } from "node:fs";
 
 const searchSnapshotPath = process.env.CHAOSLINE_SEARCH_SNAPSHOT_PATH;

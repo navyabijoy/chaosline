@@ -1,5 +1,5 @@
 import type { RunEvent, VerdictResult } from "@chaosline/core";
-import { finalAgentOutputText } from "./trace-helpers.ts";
+import { finalAgentOutputText } from "./trace-helpers";
 
 // Every concrete figure in the final output must trace to a value a tool actually
 // returned. Numerals are extracted from the final text and checked against the

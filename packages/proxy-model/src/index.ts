@@ -1,4 +1,4 @@
-export * from "./proxy.ts";
-export * from "./pricing.ts";
-export * from "./response-cache.ts";
-export * from "./mock-upstream.ts";
+export * from "./proxy";
+export * from "./pricing";
+export { ResponseCache, type CachedResponse } from "./response-cache";
+export * from "./mock-upstream";

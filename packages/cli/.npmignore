@@ -1,0 +1,1 @@
+# Keep dist folder out of npmignore so npm bin validation doesn't get confused by .gitignore

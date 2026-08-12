@@ -4,7 +4,7 @@
 // invocations, so "did this scenario's status get worse" is the only
 // comparison that's meaningful across two independent runs.
 
-import type { Report, ScenarioReportEntry } from "./types.ts";
+import type { Report, ScenarioReportEntry } from "./types";
 
 export interface ScenarioDelta {
   scenarioId: string;

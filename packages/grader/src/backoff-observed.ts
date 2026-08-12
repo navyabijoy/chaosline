@@ -1,5 +1,5 @@
 import type { RunEvent, VerdictResult } from "@chaosline/core";
-import { toolCallFingerprint, toolCalls } from "./trace-helpers.ts";
+import { toolCallFingerprint, toolCalls } from "./trace-helpers";
 
 const RETRY_AFTER_RE = /Retry-After:\s*(\d+)s/i;
 

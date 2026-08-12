@@ -6,3 +6,19 @@ venv
 .chaosline
 docs
 docs-website
+dist/
+
+# AI Prompts, Scripts, and Scratch Files
+LANDING_PAGE_PROMPT.md
+AGENT.md
+phase8-*
+fix-*.js
+dep-graph.js
+phase0/claude-code-run/
+
+# Build artifacts and local test files
+*.tgz
+packages/cli/bin/*.js
+packages/cli/bin/*.d.ts
+packages/cli/bin/*.map
+packages/cli/scenarios/

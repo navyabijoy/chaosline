@@ -5,7 +5,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { createTicket, getTicket, getTickets } from "../tickets.ts";
+import { createTicket, getTicket, getTickets } from "../tickets";
 import { writeFileSync } from "node:fs";
 
 const ticketsSnapshotPath = process.env.CHAOSLINE_HTTP_SNAPSHOT_PATH;

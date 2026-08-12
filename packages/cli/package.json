@@ -1,12 +1,48 @@
 {
-  "name": "@chaosline/cli",
+  "name": "chaosline",
   "version": "0.1.0",
-  "private": true,
+  "description": "Pre-deployment fault injection for AI agents. Test your agent against real-world failures before shipping.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/navyabijoy/chaosline.git"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "llm",
+    "fault-injection",
+    "testing",
+    "mcp",
+    "chaos-engineering"
+  ],
   "type": "module",
+  "engines": {
+    "node": ">=20.6.0"
+  },
   "bin": {
-    "chaosline": "./bin/chaosline.ts"
+    "chaosline": "./dist/chaosline.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.116.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "dotenv": "^17.4.2",
+    "yaml": "^2.6.1",
+    "zod": "^4.4.3"
+  },
+  "scripts": {
+    "build": "tsup && node scripts/copy-presets.mjs && node scripts/compile-examples.mjs"
+  },
+  "private": false,
+  "files": [
+    "dist",
+    "examples",
+    "!examples/**/*.ts",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "devDependencies": {
     "@chaosline/core": "*",
     "@chaosline/faults": "*",
     "@chaosline/grader": "*",
@@ -14,11 +50,12 @@
     "@chaosline/reporter": "*",
     "@chaosline/scenarios": "*",
     "@chaosline/shim": "*",
-    "@chaosline/world-payments": "*",
     "@chaosline/world-db": "*",
     "@chaosline/world-email": "*",
     "@chaosline/world-fs": "*",
     "@chaosline/world-http": "*",
-    "@chaosline/world-search": "*"
+    "@chaosline/world-payments": "*",
+    "@chaosline/world-search": "*",
+    "esbuild": "^0.27.7"
   }
 }

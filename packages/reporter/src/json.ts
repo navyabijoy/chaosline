@@ -1,4 +1,4 @@
-import type { Report } from "./types.ts";
+import type { Report } from "./types";
 
 /** Schema-stable machine output — same Report shape written to report.json. */
 export function renderJson(report: Report): string {

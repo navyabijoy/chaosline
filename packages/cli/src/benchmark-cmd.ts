@@ -1,4 +1,11 @@
-import { runBenchmark } from "./benchmark.ts";
+import { runBenchmark } from "./benchmark";
+
+// Global (chaosline-level) flags. Recognized wherever they appear in argv — including
+// after a --agent clause — so a global flag typed after --agent isn't silently
+// swallowed as part of the agent's own command line (see packages/core/test/trials.ts
+// sibling bug writeup: benchmark --report-dir placed after --agent used to be
+// absorbed into the agent's argv and silently ignored).
+const GLOBAL_FLAGS = new Set(["--scenario", "--report-dir", "--model-upstream", "--budget-usd", "--trials", "--pass-rate"]);
 
 export async function benchmarkCommand(args: string[]) {
   let scenarioId: string | undefined;
@@ -8,14 +15,12 @@ export async function benchmarkCommand(args: string[]) {
   let budgetUsd = 1.0;
   let nTrials = 2;
   let passRate = 0.8;
-  let doubleDash = false;
 
   let i = 0;
   while (i < args.length) {
     const arg = args[i];
 
     if (arg === "--") {
-      doubleDash = true;
       i++;
       break;
     } else if (arg === "--scenario") {
@@ -35,7 +40,7 @@ export async function benchmarkCommand(args: string[]) {
       const cmd = args[++i];
       const cmdArgs: string[] = [];
       i++;
-      while (i < args.length && args[i] !== "--agent" && args[i] !== "--") {
+      while (i < args.length && args[i] !== "--agent" && args[i] !== "--" && !GLOBAL_FLAGS.has(args[i])) {
         cmdArgs.push(args[i]);
         i++;
       }

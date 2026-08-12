@@ -2,7 +2,7 @@
 // out to a badge service. Not wired to trend history — Postgres/trend storage
 // is explicitly deferred (docs/05-roadmap.md Phase 7, "optional").
 
-import type { Report } from "./types.ts";
+import type { Report } from "./types";
 
 function badgeColor(report: Report): string {
   if (report.criticalFindings.length > 0) return "#b91c1c";

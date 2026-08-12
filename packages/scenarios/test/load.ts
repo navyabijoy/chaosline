@@ -101,7 +101,7 @@ const customNamespaced = defineScenario({
   world: "custom",
   tool: "send_webhook",
   tags: ["smoke"],
-  customServerCommand: { command: "node", args: ["./mcp/billing-server.js"] },
+  customServerCommand: { command: "node", args: ["./mcp/billing-server"] },
   faults: [{ target: "send_webhook", kind: "timeout_after_commit" }],
 });
 assert.equal(customNamespaced.id, "billing/webhook-timeout");
@@ -125,7 +125,7 @@ const built = defineScenario({
   world: "custom",
   tool: "charge_card",
   tags: ["smoke"],
-  customServerCommand: { command: "node", args: ["./mcp/billing-server.js"] },
+  customServerCommand: { command: "node", args: ["./mcp/billing-server"] },
   faults: [{ target: "charge_card", kind: "timeout_after_commit", on_call: 1 }],
 });
 assert.equal(built.world, "custom");

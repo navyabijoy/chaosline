@@ -4,7 +4,7 @@
 // field's type (e.g. a number becomes a string) rather than removing it, which is
 // what makes this invisible to a byte-matching proxy: the response is valid JSON,
 // just the wrong shape.
-import { readContentJson, writeContentJson } from "../content-json.ts";
+import { readContentJson, writeContentJson } from "../content-json";
 
 export interface SchemaViolatingOutputParams {
   field: string;

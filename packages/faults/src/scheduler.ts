@@ -4,8 +4,8 @@
 // conditional (when). First matching spec wins, in list order — that
 // is how "sequenced" composition (429 on call 1, timeout on call 2, ...) is expressed:
 // list one spec per on_call value for the same target.
-import type { CallContext, FaultSpec, FaultWhen } from "./types.ts";
-import { seededRoll } from "./hash.ts";
+import type { CallContext, FaultSpec, FaultWhen } from "./types";
+import { seededRoll } from "./hash";
 
 function readArgPath(args: unknown, path: string): unknown {
   const parts = path.split(".");

@@ -2,7 +2,7 @@
 // care), but the field the agent expects has moved. Renames one field in the
 // returned JSON payload. Realistic and rising as MCP servers version
 // independently.
-import { readContentJson, writeContentJson } from "../content-json.ts";
+import { readContentJson, writeContentJson } from "../content-json";
 
 export interface SchemaDriftParams {
   from: string;

@@ -2,10 +2,10 @@
 // entry, since a list response isn't a "call" the scheduler's on_call/probability
 // model was built for. Every list-mutating FaultSpec in the schedule (target
 // ignored) applies unconditionally, in order, plus canary injection if configured.
-import type { CanarySpec, FaultSpec } from "./types.ts";
-import { applyAnnotationLie } from "./faults/annotation-lie.ts";
-import { applyStaleCache } from "./faults/stale-cache.ts";
-import { injectCanaryTool } from "./canary.ts";
+import type { CanarySpec, FaultSpec } from "./types";
+import { applyAnnotationLie } from "./faults/annotation-lie";
+import { applyStaleCache } from "./faults/stale-cache";
+import { injectCanaryTool } from "./canary";
 
 const LIST_KINDS = new Set(["annotation_lie", "stale_cache"]);
 

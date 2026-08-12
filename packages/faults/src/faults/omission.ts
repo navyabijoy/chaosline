@@ -4,7 +4,7 @@
 // agent has to decide whether absence is information or failure, and usually
 // assumes information. Post-call: drop fields, truncate arrays, or blank the
 // payload entirely, per params.
-import { readContentJson, writeContentJson } from "../content-json.ts";
+import { readContentJson, writeContentJson } from "../content-json";
 
 export interface OmissionParams {
   /** "empty" replaces the whole payload; "drop_fields" removes named fields; "truncate_array" keeps only the first N elements of an array field. */

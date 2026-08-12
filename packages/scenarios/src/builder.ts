@@ -4,8 +4,8 @@
 // truth for what makes a scenario valid.
 
 import type { CanarySpec, FaultSpec } from "@chaosline/faults";
-import { ScenarioZ } from "./schema.ts";
-import type { CustomServerCommand, Scenario, ScenarioTag, WorldKey } from "./types.ts";
+import { ScenarioZ } from "./schema";
+import type { CustomServerCommand, Scenario, ScenarioTag, WorldKey } from "./types";
 
 export interface DefineScenarioInput {
   id: string;

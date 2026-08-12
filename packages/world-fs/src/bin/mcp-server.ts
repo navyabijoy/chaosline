@@ -5,7 +5,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { writeFile, readFile, getFsSnapshot } from "../fs.ts";
+import { writeFile, readFile, getFsSnapshot } from "../fs";
 import { writeFileSync } from "node:fs";
 
 const fsSnapshotPath = process.env.CHAOSLINE_FS_SNAPSHOT_PATH;

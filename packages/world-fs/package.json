@@ -1,7 +1,6 @@
 {
   "name": "@chaosline/world-fs",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
@@ -10,5 +9,11 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
     "zod": "^4.4.3"
-  }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts && tsup src/bin/mcp-server.ts --format esm"
+  },
+  "private": true
 }
