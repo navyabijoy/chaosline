@@ -4,10 +4,8 @@ venv
 *.log
 !phase0/*.log
 .chaosline
-docs-website
 dist/
 
-# AI Prompts, Scripts, and Scratch Files
 LANDING_PAGE_PROMPT.md
 AGENT.md
 phase8-*
