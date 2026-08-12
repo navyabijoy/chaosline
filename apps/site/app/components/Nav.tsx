@@ -60,7 +60,7 @@ export default function Nav() {
               GitHub
             </a>
             <a
-              href="https://github.com/navyabijoy/chaosline"
+              href="/docs"
               target="_blank"
               rel="noreferrer"
               className="rounded-full bg-[#0A0A0A] px-4 py-2 text-[13px] font-medium text-white transition-all duration-150 hover:bg-[#2A2A2A] hover:shadow-md"

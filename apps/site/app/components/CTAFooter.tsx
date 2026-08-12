@@ -23,7 +23,7 @@ export default function CTAFooter() {
           </p>
 
           <div className="flex flex-wrap justify-center gap-3">
-            <a
+            {/* <a
               href="https://github.com/navyabijoy/chaosline"
               target="_blank"
               rel="noopener noreferrer"
@@ -31,7 +31,7 @@ export default function CTAFooter() {
               className="text-[14px] text-[#111] bg-white hover:bg-[#f0f0f0] rounded-[8px] px-6 py-2.5 font-medium transition-colors"
             >
               Try the Demo
-            </a>
+            </a> */}
             <Link
               href="/docs"
               id="cta-read-docs"
