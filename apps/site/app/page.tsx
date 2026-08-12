@@ -201,14 +201,14 @@ function CTASection() {
 
           {/* CTAs */}
           <div className="flex flex-wrap justify-center gap-3 mb-8">
-            <a
+            {/* <a
               href="https://github.com/navyabijoy/chaosline"
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 bg-white text-[#0A0A0A] rounded-[10px] px-6 py-3 text-[14px] font-semibold hover:bg-white/90 transition-all shadow-[0_0_0_1px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_24px_rgba(255,255,255,0.12)]"
             >
               Try the demo
-            </a>
+            </a> */}
             <Link
               href="/docs"
               className="inline-flex items-center gap-2 bg-white/[0.07] text-white border border-white/[0.1] rounded-[10px] px-6 py-3 text-[14px] font-medium hover:bg-white/[0.12] hover:border-white/[0.18] transition-all"
