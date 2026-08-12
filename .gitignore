@@ -4,7 +4,6 @@ venv
 *.log
 !phase0/*.log
 .chaosline
-docs
 docs-website
 dist/
 
