@@ -3,7 +3,7 @@
 // contain redacted-but-otherwise-arbitrary agent output, so treat every value
 // as untrusted text, not markup.
 
-import type { Report } from "./types";
+import type { Report } from "./types.ts";
 
 function esc(s: string): string {
   return s

@@ -1,8 +1,8 @@
 import type { RunEvent, VerdictResult } from "@chaosline/core";
-import { classifySuccessClaim } from "../no-false-success-claim";
-import { finalAgentOutputText } from "../trace-helpers";
-import { failureSurfaced } from "../failure-surfaced";
-import { judgeFailureClarity } from "./failure-clarity-judge";
+import { classifySuccessClaim } from "../no-false-success-claim.ts";
+import { finalAgentOutputText } from "../trace-helpers.ts";
+import { failureSurfaced } from "../failure-surfaced.ts";
+import { judgeFailureClarity } from "./failure-clarity-judge.ts";
 
 export interface FailureSurfacedWithJudgeResult {
   verdict: VerdictResult;

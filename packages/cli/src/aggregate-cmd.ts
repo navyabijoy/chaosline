@@ -1,4 +1,4 @@
-import { aggregateBenchmarkReports } from "./aggregate-benchmark";
+import { aggregateBenchmarkReports } from "./aggregate-benchmark.ts";
 
 export async function aggregateCommand(args: string[]) {
   let inputDir: string | undefined;

@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { AnthropicContentBlock } from "./proxy";
+import type { AnthropicContentBlock } from "./proxy.ts";
 
 export interface TokenUsage {
   input_tokens?: number;

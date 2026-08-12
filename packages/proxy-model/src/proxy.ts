@@ -6,8 +6,8 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { Readable } from "node:stream";
 import { TraceWriter } from "@chaosline/core";
-import { costUsd, type TokenUsage } from "./pricing";
-import { ResponseCache, type CachedResponse } from "./response-cache";
+import { costUsd, type TokenUsage } from "./pricing.ts";
+import { ResponseCache, type CachedResponse } from "./response-cache.ts";
 
 export interface ModelProxyOptions {
   upstream: string;

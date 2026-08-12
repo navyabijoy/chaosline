@@ -1,8 +1,8 @@
 import { readFileSync, existsSync } from "node:fs";
 import { readTrace } from "@chaosline/core";
 import { normalizeWorldSnapshot } from "@chaosline/scenarios";
-import type { ReproBundle } from "./repro-bundle";
-import { gradeTrial, runSingleTrial } from "./run";
+import type { ReproBundle } from "./repro-bundle.ts";
+import { gradeTrial, runSingleTrial } from "./run.ts";
 
 export async function replayCommand(args: string[]): Promise<void> {
   const bundleIdx = args.indexOf("--bundle");

@@ -1,1 +1,1 @@
-export * from "./rows";
+export * from "./rows.ts";

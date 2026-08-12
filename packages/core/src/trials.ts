@@ -1,6 +1,6 @@
 // Multi-trial result types and flake classification.
 
-import type { Verdict, VerdictResult } from "./verdict";
+import type { Verdict, VerdictResult } from "./verdict.ts";
 
 export interface TrialResult {
   trialIndex: number;

@@ -8,19 +8,19 @@
 //                        drops it (hang after commit), or passes it through.
 // tools/list mutation (annotation_lie, stale_cache, canary injection) is handled
 // separately by the shim, since it's keyed off method, not tool name.
-import type { CanarySpec, FaultSpec } from "./types";
-import { applyRateLimit429 } from "./faults/rate-limit-429";
-import { applyMalformedResponse } from "./faults/malformed-response";
-import { applyAuthExpiry } from "./faults/auth-expiry";
-import { applyRetryStorm } from "./faults/retry-storm";
-import { applyCapabilityDowngrade } from "./faults/capability-downgrade";
-import { applySchemaDrift } from "./faults/schema-drift";
-import { applyOmission } from "./faults/omission";
-import { applySilentWrongData } from "./faults/silent-wrong-data";
-import { applyPartialFailureMidPlan } from "./faults/partial-failure-mid-plan";
-import { applyToolResultInjection } from "./faults/tool-result-injection";
-import { applySchemaViolatingOutput } from "./faults/schema-violating-output";
-import { applyWrongErrorChannel } from "./faults/wrong-error-channel";
+import type { CanarySpec, FaultSpec } from "./types.ts";
+import { applyRateLimit429 } from "./faults/rate-limit-429.ts";
+import { applyMalformedResponse } from "./faults/malformed-response.ts";
+import { applyAuthExpiry } from "./faults/auth-expiry.ts";
+import { applyRetryStorm } from "./faults/retry-storm.ts";
+import { applyCapabilityDowngrade } from "./faults/capability-downgrade.ts";
+import { applySchemaDrift } from "./faults/schema-drift.ts";
+import { applyOmission } from "./faults/omission.ts";
+import { applySilentWrongData } from "./faults/silent-wrong-data.ts";
+import { applyPartialFailureMidPlan } from "./faults/partial-failure-mid-plan.ts";
+import { applyToolResultInjection } from "./faults/tool-result-injection.ts";
+import { applySchemaViolatingOutput } from "./faults/schema-violating-output.ts";
+import { applyWrongErrorChannel } from "./faults/wrong-error-channel.ts";
 
 export type PreCallOutcome =
   | { action: "short_circuit"; response: unknown }

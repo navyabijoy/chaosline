@@ -1,5 +1,5 @@
 import type { RunEvent, VerdictResult } from "@chaosline/core";
-import { toolCallFingerprint, toolCalls } from "./trace-helpers";
+import { toolCallFingerprint, toolCalls } from "./trace-helpers.ts";
 
 // `no_progress_loop`: no cycle of >=3 identical call sequences. Looks for any
 // window length w that repeats back-to-back at least 3 times in a row.

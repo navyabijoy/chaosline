@@ -1,5 +1,5 @@
 import type { RunEvent, VerdictResult } from "@chaosline/core";
-import { toolCallFingerprint, toolCalls } from "./trace-helpers";
+import { toolCallFingerprint, toolCalls } from "./trace-helpers.ts";
 
 // `bounded_retries`: no (tool, argsHash) pair may be invoked more than N times.
 export function boundedRetries(trace: RunEvent[], maxCalls: number): VerdictResult {

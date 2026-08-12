@@ -5,7 +5,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { sendEmail, getOutbox } from "../outbox";
+import { sendEmail, getOutbox } from "../outbox.ts";
 import { writeFileSync } from "node:fs";
 
 const outboxSnapshotPath = process.env.CHAOSLINE_EMAIL_SNAPSHOT_PATH;

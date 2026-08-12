@@ -4,7 +4,7 @@
 // snapshot file written on every mutating call, gated by an env var), so there
 // is nothing here beyond the handful of facts that differ between them.
 
-import type { WorldKey } from "./types";
+import type { WorldKey } from "./types.ts";
 
 export interface WorldAdapter {
   /** Import specifier resolved via import.meta.resolve. Empty for "custom" —

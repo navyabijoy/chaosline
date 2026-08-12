@@ -1,6 +1,6 @@
 import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname } from "node:path";
-import type { RunEvent } from "./trace";
+import type { RunEvent } from "./trace.ts";
 
 export class TraceWriter {
   #path: string;

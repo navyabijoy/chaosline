@@ -1,4 +1,4 @@
-import { runBenchmark } from "./benchmark";
+import { runBenchmark } from "./benchmark.ts";
 
 // Global (chaosline-level) flags. Recognized wherever they appear in argv — including
 // after a --agent clause — so a global flag typed after --agent isn't silently

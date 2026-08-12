@@ -30,7 +30,7 @@ import {
   terminated,
 } from "@chaosline/grader";
 import type { CanarySpec, FaultSpec } from "@chaosline/faults";
-import type { ReproBundle } from "./repro-bundle";
+import type { ReproBundle } from "./repro-bundle.ts";
 import { startModelProxy, ResponseCache } from "@chaosline/proxy-model";
 import { seededRoll } from "@chaosline/faults";
 import {

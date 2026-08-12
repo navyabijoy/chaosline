@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 import { createRequire } from "node:module";
-import { runCommand } from "../src/run";
-import { shimCommand } from "../src/shim-cmd";
-import { replayCommand } from "../src/replay";
-import { listCommand } from "../src/list-cmd";
-import { initCommand } from "../src/init";
-import { reportDiffCommand } from "../src/report-diff";
-import { benchmarkCommand } from "../src/benchmark-cmd";
-import { aggregateCommand } from "../src/aggregate-cmd";
-import { demoCommand } from "../src/demo";
+import { runCommand } from "../src/run.ts";
+import { shimCommand } from "../src/shim-cmd.ts";
+import { replayCommand } from "../src/replay.ts";
+import { listCommand } from "../src/list-cmd.ts";
+import { initCommand } from "../src/init.ts";
+import { reportDiffCommand } from "../src/report-diff.ts";
+import { benchmarkCommand } from "../src/benchmark-cmd.ts";
+import { aggregateCommand } from "../src/aggregate-cmd.ts";
+import { demoCommand } from "../src/demo.ts";
 
 const [, , sub, ...rest] = process.argv;
 

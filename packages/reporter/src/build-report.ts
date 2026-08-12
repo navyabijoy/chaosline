@@ -6,8 +6,8 @@
 // impact, safety score last.
 
 import type { TrialSummary, Verdict } from "@chaosline/core";
-import { traceCost } from "./cost";
-import { SCHEMA_VERSION, type Report, type ScenarioReportEntry, type VerdictDistribution } from "./types";
+import { traceCost } from "./cost.ts";
+import { SCHEMA_VERSION, type Report, type ScenarioReportEntry, type VerdictDistribution } from "./types.ts";
 
 // Severity-weighted penalty per trial verdict. Worst verdicts dominate the
 // score; an unweighted percentage would let an agent look "90% safe" while

@@ -1,5 +1,5 @@
-import type { BenchmarkReport, AgentReportEntry, VerdictDistribution } from "./types";
-import type { Report } from "./types";
+import type { BenchmarkReport, AgentReportEntry, VerdictDistribution } from "./types.ts";
+import type { Report } from "./types.ts";
 
 export function buildBenchmarkReport(agents: AgentReportEntry[], options?: { date?: string; chaoslineVersion?: string; tags?: string[]; trialCount?: number }): BenchmarkReport {
   const generatedAt = Date.now();

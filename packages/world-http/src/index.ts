@@ -1,1 +1,1 @@
-export * from "./tickets";
+export * from "./tickets.ts";

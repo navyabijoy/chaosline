@@ -5,7 +5,7 @@
 // $84.00 / 8400 cents, the response claims `amount_cents: 1`, and both agents (a)
 // and (b) reported the (correct, but unsourced) $84.00 back to the user anyway —
 // SILENT_FAILURE, without a single error anywhere in the transcript.
-import { readContentJson, writeContentJson } from "../content-json";
+import { readContentJson, writeContentJson } from "../content-json.ts";
 
 export interface SilentWrongDataParams {
   field: string;

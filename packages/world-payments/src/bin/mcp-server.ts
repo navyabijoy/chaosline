@@ -5,7 +5,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { createRefund, getLedger } from "../ledger";
+import { createRefund, getLedger } from "../ledger.ts";
 import { writeFileSync } from "node:fs";
 
 const ledgerSnapshotPath = process.env.CHAOSLINE_LEDGER_PATH;
