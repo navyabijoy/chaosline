@@ -1,0 +1,41 @@
+{
+  "name": "chaosline-site",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "predev": "node -e \"require('node:fs').rmSync('.next', { recursive: true, force: true })\"",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.7.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.18.0",
+    "gray-matter": "^4.0.3",
+    "lucide-react": "^1.31.0",
+    "next": "15.5.23",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-syntax-highlighter": "^15.6.1",
+    "remark": "^15.0.1",
+    "remark-gfm": "^4.0.0",
+    "remark-html": "^16.0.1",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "15.5.23",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.0"
+  }
+}

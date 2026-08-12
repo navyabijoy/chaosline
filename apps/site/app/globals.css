@@ -1,0 +1,205 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ─────────────────────────────────────────────────── */
+:root {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+
+  /* Background */
+  --bg-page:    #F9F9F8;
+  --bg-card:    #FFFFFF;
+  --bg-sunken:  #F3F3F1;
+  --bg-dark:    #0A0A0C;
+
+  /* Ink */
+  --ink-900:  #0A0A0A;
+  --ink-700:  #1C1C1E;
+  --ink-500:  #6B7280;
+  --ink-400:  #9CA3AF;
+  --ink-300:  #D1D5DB;
+  --ink-200:  #E5E7EB;
+  --ink-100:  #F3F4F6;
+
+  /* Accents / verdicts */
+  --accent-red:    #FF3B30;
+  --accent-orange: #FF9500;
+  --accent-green:  #34C759;
+  --accent-yellow: #FFCC00;
+  --accent-blue:   #0066CC;
+  --accent-purple: #BF5AF2;
+  --accent-teal:   #64D2FF;
+
+  /* Lines */
+  --border: #E5E7EB;
+  --border-strong: #D1D5DB;
+}
+
+/* ─── Base ──────────────────────────────────────────────────────────── */
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  background-color: var(--bg-page);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-page);
+  color: var(--ink-900);
+  line-height: 1.6;
+}
+
+/* ─── Section helpers ───────────────────────────────────────────────── */
+.section-pad {
+  padding-top: 120px;
+  padding-bottom: 120px;
+}
+
+@media (max-width: 768px) {
+  .section-pad {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+}
+
+.section-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ─── Section eyebrow label ─────────────────────────────────────────── */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+
+/* ─── Headings ──────────────────────────────────────────────────────── */
+.heading-xl {
+  font-size: clamp(42px, 6vw, 72px);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: var(--ink-900);
+}
+
+.heading-lg {
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--ink-900);
+}
+
+.heading-md {
+  font-size: clamp(28px, 3.5vw, 44px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: var(--ink-900);
+}
+
+/* ─── Terminal / Code ───────────────────────────────────────────────── */
+.terminal-window {
+  background: #0D0D0D;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.12),
+    0 32px 80px rgba(0, 0, 0, 0.45),
+    0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.terminal-titlebar {
+  background: #181818;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.terminal-dot { width: 11px; height: 11px; border-radius: 50%; }
+.terminal-dot-red    { background: #FF5F56; }
+.terminal-dot-yellow { background: #FFBD2E; }
+.terminal-dot-green  { background: #27C93F; }
+
+.terminal-body {
+  padding: 20px 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.75;
+  color: #E0E0E0;
+}
+
+/* ─── Verdict badges ────────────────────────────────────────────────── */
+.verdict-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.verdict-harmful  { background: rgba(255, 59, 48, 0.12); color: #FF3B30; border: 1px solid rgba(255,59,48,0.25); }
+.verdict-silent   { background: rgba(255,149,  0, 0.12); color: #FF9500; border: 1px solid rgba(255,149,0,0.25); }
+.verdict-safe     { background: rgba( 52,199, 89, 0.12); color: #34C759; border: 1px solid rgba(52,199,89,0.25); }
+.verdict-degraded { background: rgba(255,204,  0, 0.12); color: #B8900A; border: 1px solid rgba(255,204,0,0.25); }
+
+/* ─── Glow utilities ────────────────────────────────────────────────── */
+.glow-red    { box-shadow: 0 0 60px rgba(255,  59, 48, 0.12); }
+.glow-green  { box-shadow: 0 0 60px rgba( 52, 199, 89, 0.10); }
+.glow-orange { box-shadow: 0 0 60px rgba(255, 149,  0, 0.10); }
+
+/* ─── Scrollbar ─────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.28); }
+
+/* ─── Prose overrides ───────────────────────────────────────────────── */
+.prose pre  { background: #0D0D0D; color: #e0e0e0; border-radius: 12px; }
+.prose code { background: rgba(0,102,204,0.08); color: #0066cc; padding: 2px 6px; border-radius: 4px; }
+.prose pre code { background: transparent; color: inherit; padding: 0; }
+.prose h1, .prose h2, .prose h3 { font-family: var(--font-sans); color: var(--ink-900); }
+.prose a { color: var(--accent-blue); }
+.prose table { font-size: 15px; }
+
+/* ─── Reduced motion ────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Tailwind color token shims ────────────────────────────────────── */
+/* (These let Tailwind class names keep working for the existing components) */
+
+/* surface / line tokens used in Nav/existing code */
+.bg-surface  { background-color: var(--bg-page);  }
+.bg-raised   { background-color: var(--bg-card);  }
+.bg-sunken   { background-color: var(--bg-sunken); }
+.text-ink    { color: var(--ink-900); }
+.text-muted  { color: var(--ink-500); }
+.text-subtle { color: var(--ink-400); }
+.border-line { border-color: var(--border); }
+.border-line-strong { border-color: var(--border-strong); }
+
+/* section-padding backward compat */
+.section-padding { padding-top: 120px; padding-bottom: 120px; }
+@media (max-width: 768px) { .section-padding { padding-top: 80px; padding-bottom: 80px; } }

@@ -17,11 +17,11 @@ examples/agent-langchain/
 Your agent must:
 
 1. **Read environment variables** set by `chaosline run`:
-   - `MCP_CONFIG` — path to JSON file with MCP server configuration
-   - `CHAOSLINE_DEMO_SERVER_KEY` — which MCP server to connect to (e.g., "payments", "db")
-   - `CHAOSLINE_DEMO_TASK_PROMPT` — the user task to execute
-   - `ANTHROPIC_BASE_URL` (if using Anthropic) or `OPENAI_BASE_URL` (if using OpenAI) — model proxy endpoint
-   - `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` — API key (loaded from `.env`)
+   - `MCP_CONFIG`  -  path to JSON file with MCP server configuration
+   - `CHAOSLINE_DEMO_SERVER_KEY`  -  which MCP server to connect to (e.g., "payments", "db")
+   - `CHAOSLINE_DEMO_TASK_PROMPT`  -  the user task to execute
+   - `ANTHROPIC_BASE_URL` (if using Anthropic) or `OPENAI_BASE_URL` (if using OpenAI)  -  model proxy endpoint
+   - `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`  -  API key (loaded from `.env`)
 
 2. **Connect to the MCP server** via stdio transport:
    ```json

@@ -1,8 +1,8 @@
 # Chaosline guide
 
-User-facing documentation for writing and running scenarios. (The `docs/` directory in this repo is internal planning material, gitignored on purpose — this `guide/` directory is the committed, public counterpart.)
+User-facing documentation for writing and running scenarios. (The `docs/` directory in this repo is internal planning material, gitignored on purpose  -  this `guide/` directory is the committed, public counterpart.)
 
-- [Writing a scenario](writing-a-scenario.md) — the YAML schema, a worked example against a packaged world, a worked example against your own tool (`world: custom`), the fault reference, tags, `derivedFrom`, the code API, and troubleshooting.
+- [Writing a scenario](writing-a-scenario.md)  -  the YAML schema, a worked example against a packaged world, a worked example against your own tool (`world: custom`), the fault reference, tags, `derivedFrom`, the code API, and troubleshooting.
 
 ## Presets
 

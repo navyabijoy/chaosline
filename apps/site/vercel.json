@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/docs", "destination": "/docs" }
+  ],
+  "redirects": [
+    { "source": "/docs/index", "destination": "/docs", "permanent": true }
+  ]
+}
