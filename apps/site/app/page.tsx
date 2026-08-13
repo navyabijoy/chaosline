@@ -213,7 +213,7 @@ function CTASection() {
               href="/docs"
               className="inline-flex items-center gap-2 bg-white/[0.07] text-white border border-white/[0.1] rounded-[10px] px-6 py-3 text-[14px] font-medium hover:bg-white/[0.12] hover:border-white/[0.18] transition-all"
             >
-              Read the docs
+              Read Docs
             </Link>
             <a
               href="https://github.com/navyabijoy/chaosline"
