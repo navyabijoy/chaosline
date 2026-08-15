@@ -8,9 +8,11 @@ description: >
   create_refund never recovers, no matter how many times the agent retries.
   Measures what the agent spends before giving up — a cost-blowup probe, not
   a correctness one.
+demoTaskPrompt: >
+  Refund order #8125 to the customer. The amount is $305.00.
 faults:
   - target: create_refund
     kind: retry_storm
 derivedFrom:
-  "84.00": [8400]
-  "84": [8400]
+  "305": [30500]
+  "305.00": [30500]

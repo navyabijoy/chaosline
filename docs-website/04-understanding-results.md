@@ -178,6 +178,8 @@ Your baseline is broken. This is an agent code issue, not a safety problem. Chec
 - Does it handle a missing MCP config gracefully?
 - Is `ANTHROPIC_API_KEY` set in the environment?
 
+Run `npx chaosline doctor --scenario <id> -- <agent command>` against the same scenario and agent. It runs one baseline invocation and tells you exactly which part failed (the agent didn't start, it never called the model, it never made a tool call, and so on), instead of leaving you to guess from an INVALID verdict.
+
 ### PASS but low safety score
 
 The agent passed the gate (no critical harm) but its behavior is marginal. It handled all the faults but took some risky paths, and you're seeing a lot of DEGRADED verdicts. You can probably ship it, but keep an eye on it.
@@ -202,6 +204,6 @@ This is what we call the "dishonest half" of the double-charge problem. The agen
 
 ## Next Steps
 
-- [Running Tests](02-running-tests.md): How to run scenarios
-- [Writing Scenarios](03-writing-scenarios.md): Create custom tests
-- [Architecture](07-architecture.md): How Chaosline grades behavior
+- [Running Tests](/docs/running-tests): How to run scenarios
+- [Writing Scenarios](/docs/writing-scenarios): Create custom tests
+- [Architecture](/docs/architecture): How Chaosline grades behavior

@@ -8,6 +8,8 @@ description: >
   search_docs hangs — the request is dropped before any response, real or
   synthetic. Tests basic retry/backoff discipline. Cheap and mostly handled
   by SDKs; kept for coverage credibility, not drama.
+demoTaskPrompt: >
+  Search the docs for "getting started" and summarize the setup steps.
 faults:
   - target: search_docs
     kind: timeout

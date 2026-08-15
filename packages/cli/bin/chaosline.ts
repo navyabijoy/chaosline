@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { createRequire } from "node:module";
 import { runCommand } from "../src/run.ts";
+import { doctorCommand } from "../src/doctor.ts";
 import { shimCommand } from "../src/shim-cmd.ts";
 import { replayCommand } from "../src/replay.ts";
 import { listCommand } from "../src/list-cmd.ts";
@@ -13,7 +14,7 @@ import { demoCommand } from "../src/demo.ts";
 const [, , sub, ...rest] = process.argv;
 
 const USAGE =
-  "Usage:\n  chaosline run (--scenario <id> | --tag <smoke|full|critical>) [--trials N] [--pass-rate P] [--critical-tolerance N] [--report-dir <path>] [--scenarios-dir <path>] [--scenarios-module <path>] -- <agent command...>  (runs your real agent against a real model)\n  chaosline list [--tag <tag>] [--world <world>]\n  chaosline replay --bundle <path> [--explain] [--no-rerun]\n  chaosline report-diff --base <path> --head <path>\n  chaosline benchmark --scenario <id> --agent <name> <cmd> [args...] [--agent ...] [--report-dir <path>] [--model-upstream <url>]\n  chaosline aggregate-benchmark --input-dir <path> [--output-dir <path>]\n  chaosline demo  (scripted walkthrough — the model side is a fixed, replayed transcript, not a live LLM call; use `chaosline run` to test against a real model)\n  chaosline shim -- <mcp server command...>\n  chaosline init";
+  "Usage:\n  chaosline run (--scenario <id> | --tag <smoke|full|critical> | --world <world>) [--trials N] [--tier smoke] [--pass-rate P] [--critical-tolerance N] [--no-baseline] [--report-dir <path>] [--scenarios-dir <path>] [--scenarios-module <path>] [--model-upstream <url>] -- <agent command...>  (runs your real agent against a real model; --tag and --world can combine, --scenario is exclusive of both)\n  chaosline doctor [--scenario <id> | --tag <tag>] [--scenarios-dir <path>] [--model-upstream <url>] -- <agent command...>  (one baseline invocation that checks the agent contract — run this first)\n  chaosline list [--tag <tag>] [--world <world>]\n  chaosline replay --bundle <path> [--explain] [--no-rerun]\n  chaosline report-diff --base <path> --head <path>\n  chaosline benchmark --scenario <id> --agent <name> <cmd> [args...] [--agent ...] [--report-dir <path>] [--model-upstream <url>]\n  chaosline aggregate-benchmark --input-dir <path> [--output-dir <path>]\n  chaosline demo  (scripted walkthrough — the model side is a fixed, replayed transcript, not a live LLM call; use `chaosline run` to test against a real model)\n  chaosline shim -- <mcp server command...>\n  chaosline init";
 
 if (sub === "--help" || sub === "-h" || sub === "help") {
   console.log(USAGE);
@@ -36,6 +37,13 @@ if (sub === "--help" || sub === "-h" || sub === "help") {
     await runCommand(rest);
   } catch (e) {
     console.error(`chaosline run: harness error: ${(e as Error).stack ?? e}`);
+    process.exit(2);
+  }
+} else if (sub === "doctor") {
+  try {
+    await doctorCommand(rest);
+  } catch (e) {
+    console.error(`chaosline doctor: harness error: ${(e as Error).stack ?? e}`);
     process.exit(2);
   }
 } else if (sub === "shim") {

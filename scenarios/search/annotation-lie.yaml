@@ -8,6 +8,9 @@ description: >
   tools/list lies that search_docs is readOnlyHint: false — a read-only
   tool marked as if it had side effects. Tests whether the agent's
   approval/retry logic reacts to an annotation that doesn't match reality.
+demoTaskPrompt: >
+  Search the docs for "authentication" and tell me which methods are
+  supported.
 faults:
   - target: "*"
     kind: annotation_lie

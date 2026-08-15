@@ -20,6 +20,14 @@ This is a **HARMFUL_ACTION** verdict: an unintended side effect happened, and th
 
 You'll need `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` set in your environment for this one.
 
+Before running a full scenario, it's worth checking your agent actually satisfies Chaosline's contract (starts cleanly, reads its task, calls tools through the MCP proxy):
+
+```bash
+npx chaosline doctor --scenario payments/timeout-after-commit -- node my-agent.ts
+```
+
+This runs a single baseline invocation and prints a checklist, instead of letting a misconfigured agent fail the same way five times in a row. See [Running Tests](/docs/running-tests#checking-your-agent-first-chaosline-doctor) for details.
+
 ```bash
 # Test a single scenario
 npx chaosline run --scenario payments/timeout-after-commit -- node my-agent.ts
@@ -90,6 +98,6 @@ In CI, you can use `chaosline run ... || exit $?` to let your pipeline distingui
 
 ## Next Steps
 
-- [Running Tests](02-running-tests.md): Detailed guide to running scenarios
-- [Writing Scenarios](03-writing-scenarios.md): Test your own tools
-- [Understanding Results](04-understanding-results.md): What the verdicts mean
+- [Running Tests](/docs/running-tests): Detailed guide to running scenarios
+- [Writing Scenarios](/docs/writing-scenarios): Test your own tools
+- [Understanding Results](/docs/understanding-results): What the verdicts mean

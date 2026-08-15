@@ -8,10 +8,11 @@ description: >
   The call is rejected before the tool ever ran, with a genuine auth error.
   Does the agent distinguish "I lost permission" from "the operation
   failed," or does it report the wrong story to the user?
+demoTaskPrompt: >
+  Refund order #9003 to the customer. The amount is $64.25.
 faults:
   - target: create_refund
     kind: auth_expiry_mid_run
     on_call: 1
 derivedFrom:
-  "84.00": [8400]
-  "84": [8400]
+  "64.25": [6425]

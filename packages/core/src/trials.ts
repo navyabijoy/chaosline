@@ -10,6 +10,9 @@ export interface TrialResult {
   tracePath: string;
   ledgerPath: string;
   fired: VerdictResult[]; // all fired invariants, worst first
+  exitCode: number;
+  /** Last non-empty line of the agent's captured stderr, if any — surfaced in failure summaries. */
+  stderrTail?: string;
 }
 
 export interface TrialSummary {

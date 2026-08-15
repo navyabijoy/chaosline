@@ -7,6 +7,9 @@ tags: [full]
 description: >
   http_create_ticket never recovers, no matter how many times the agent
   retries. Measures token/USD spend before giving up.
+demoTaskPrompt: >
+  Open a support ticket with subject "Webhook deliveries failing" and body
+  "No events have been received since this morning."
 faults:
   - target: http_create_ticket
     kind: retry_storm

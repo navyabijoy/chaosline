@@ -56,12 +56,14 @@ derivedFrom: "other-scenario-id"      # Link to a related scenario
 canary:                               # Test for secret injection or exfiltration
   toolName: "my_tool"
   secret: "should-not-escape"
-demoTaskPrompt: "Task description"    # Used when running `chaosline demo`
+demoTaskPrompt: "Task description"    # The task given to your agent for this scenario
 ```
+
+`demoTaskPrompt` reaches your agent two ways, so most agents need no special handling: Chaosline writes it to your agent's stdin (as a single line, then closes stdin), and also exports it as `CHAOSLINE_DEMO_TASK_PROMPT`. Read whichever your agent already reads its input from. Either way, your agent's launch command must be non-interactive: `chaosline run` invokes it with no one at the keyboard, so a blocking prompt that expects real typed input will just hang until the wall-clock cap kills it.
 
 ## Fault Types
 
-You can apply any of these at the tool level. See the [Architecture](07-architecture.md#faults) page for details on how each one works.
+You can apply any of these at the tool level. See the [Architecture](/docs/architecture#faults) page for details on how each one works.
 
 | Fault | Description |
 |-------|-------------|
@@ -182,6 +184,9 @@ if __name__ == "__main__":
 ## Testing Your Scenario
 
 ```bash
+# Check your agent starts, calls the model through Chaosline, and calls your tool
+npx chaosline doctor --scenario my-tool/test -- node my-agent.ts
+
 # Test baseline (no faults) to make sure your setup works
 npx chaosline run --scenario my-tool/test -- node my-agent.ts
 
@@ -270,6 +275,6 @@ Chaosline loads scenarios from both its built-in presets and from your local `./
 
 ## Next Steps
 
-- [Running Tests](02-running-tests.md): Run your scenarios
-- [Understanding Results](04-understanding-results.md): Interpret verdicts
-- [Architecture](07-architecture.md): How faults work internally
+- [Running Tests](/docs/running-tests): Run your scenarios
+- [Understanding Results](/docs/understanding-results): Interpret verdicts
+- [Architecture](/docs/architecture): How faults work internally

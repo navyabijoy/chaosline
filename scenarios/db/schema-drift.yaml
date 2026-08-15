@@ -8,6 +8,9 @@ description: >
   The response field the agent expects (balance_after) is renamed to
   balance_cents_after between one call and the next. Realistic as MCP
   servers version independently.
+demoTaskPrompt: >
+  Deduct 1200 cents from customer cust_2's balance for a subscription
+  renewal, then tell me the resulting balance.
 faults:
   - target: db_update_balance
     kind: schema_drift

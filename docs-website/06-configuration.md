@@ -4,15 +4,16 @@
 
 ### Required
 
-Set one of these depending on which model provider you're using:
+Set the key for whichever provider your agent actually uses:
 
-- `ANTHROPIC_API_KEY`: Required if using any Anthropic model
-- `OPENAI_API_KEY`: Required if using any OpenAI model
+- `ANTHROPIC_API_KEY`: Required if your agent calls an Anthropic model
+- `OPENAI_API_KEY`: Required if your agent calls an OpenAI model
+
+You don't need to set both, and you don't need to tell Chaosline which one you're using. The proxy looks at each request's shape (Anthropic's `/v1/messages` vs OpenAI's `/v1/chat/completions`) and forwards it to the matching real API on its own, so your agent's actual key is the one that gets used.
 
 ### Optional
 
-- `CHAOSLINE_MODEL_UPSTREAM`: Override the model endpoint (default: `https://api.anthropic.com`).
-  Useful for pointing at a local mock server (`http://127.0.0.1:18765`) so you can test without making real API calls.
+- `CHAOSLINE_MODEL_UPSTREAM`: Pin every request to one endpoint instead of routing by detected provider. Useful for pointing both Anthropic- and OpenAI-shaped calls at a single local mock server (`http://127.0.0.1:18765`) so you can test without making real API calls, or for a custom gateway that fronts both providers. Leave this unset for normal use against real models.
 
 - `CHAOSLINE_BUDGET_USD`: Maximum spend per run (default: 1.0).
   If the agent exceeds this, it gets killed and the run is marked DEGRADED. This is a safeguard against runaway costs in case your agent gets stuck in a loop.
@@ -25,9 +26,9 @@ Chaosline sets these automatically when it launches your agent:
 
 - `MCP_CONFIG`: Path to the config JSON your agent reads to find the tool server
 - `CHAOSLINE_DEMO_SERVER_KEY`: Which MCP server your agent should connect to
-- `CHAOSLINE_DEMO_TASK_PROMPT`: The task the agent should try to complete
-- `ANTHROPIC_BASE_URL`: Custom Anthropic endpoint (used when a mock is configured)
-- `OPENAI_BASE_URL`: Custom OpenAI endpoint (used when a mock is configured)
+- `CHAOSLINE_DEMO_TASK_PROMPT`: The task the agent should try to complete. Also written to your agent's stdin (one line, then stdin is closed), so an agent that reads its task from stdin works without reading this variable at all.
+- `ANTHROPIC_BASE_URL`: Points your agent's Anthropic client at Chaosline's proxy instead of the real API
+- `OPENAI_BASE_URL`: Points your agent's OpenAI client at Chaosline's proxy instead of the real API
 
 ## CLI Flags
 
@@ -41,13 +42,30 @@ npx chaosline run [OPTIONS] -- <agent command>
 |------|---------|-------------|
 | `--scenario ID` | Required | Scenario to run (e.g., `payments/timeout-after-commit`) |
 | `--tag TAG` | Optional | Run by tag instead (`smoke`, `full`, `critical`) |
+| `--world WORLD` | Optional | Run every scenario in a world instead (e.g. `email`, `payments`). Combines with `--tag` |
 | `--trials N` | 3 (smoke), 5 (others) | Number of times to run the scenario |
+| `--tier smoke` | Optional | Shorthand that sets `--trials 3` |
 | `--pass-rate P` | 0.8 | Fraction of trials that must pass (0.0 to 1.0) |
 | `--critical-tolerance N` | 0 | Tolerate N critical verdicts (not recommended) |
+| `--no-baseline` | Optional | Skip the no-fault baseline trial (not recommended  -  without it, Chaosline can't tell a broken agent from a real finding) |
 | `--report-dir PATH` | `.chaosline/reports` | Where to write reports |
 | `--scenarios-dir PATH` | `./scenarios` | Custom scenarios directory |
 | `--scenarios-module PATH` | Optional | Import scenarios from an npm module |
-| `--model-upstream URL` | https://api.anthropic.com | Custom model endpoint |
+| `--model-upstream URL` | auto (routes by detected provider) | Pin every request to one model endpoint instead |
+
+### doctor
+
+```bash
+npx chaosline doctor [OPTIONS] -- <agent command>
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--scenario ID` | Optional | Scenario to check against (picks a smoke-tagged one if omitted) |
+| `--tag TAG` | Optional | Pick any scenario with this tag instead of naming one |
+| `--scenarios-dir PATH` | `./scenarios` | Custom scenarios directory |
+
+Runs a single baseline invocation (no faults) and reports whether the agent command starts, exits cleanly, calls the model through the proxy, makes a tool call via `MCP_CONFIG`, and completes the task. Exits 0 if every check passes, 1 otherwise. Doesn't run any fault trials, so it's the cheapest way to catch a broken setup before a full `run`.
 
 ### benchmark
 
@@ -62,7 +80,7 @@ npx chaosline benchmark [OPTIONS]
 | `--report-dir PATH` | `.chaosline/benchmark` | Output directory |
 | `--trials N` | 2 | Trials per agent |
 | `--pass-rate P` | 0.5 | Pass threshold |
-| `--model-upstream URL` | https://api.anthropic.com | Custom model endpoint |
+| `--model-upstream URL` | auto (routes by detected provider) | Pin every request to one model endpoint instead |
 
 ### replay
 
@@ -208,6 +226,6 @@ CHAOSLINE_MODEL_UPSTREAM=http://127.0.0.1:18765 npx chaosline run ...
 
 ## Next Steps
 
-- [Running Tests](02-running-tests.md): Use these flags
-- [Writing Scenarios](03-writing-scenarios.md): Custom scenario config
-- [Architecture](07-architecture.md): How Chaosline works
+- [Running Tests](/docs/running-tests): Use these flags
+- [Writing Scenarios](/docs/writing-scenarios): Custom scenario config
+- [Architecture](/docs/architecture): How Chaosline works

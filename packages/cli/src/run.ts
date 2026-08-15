@@ -10,6 +10,7 @@ import {
   type ResolvedVerdict,
   summarizeTrials,
   isCritical,
+  isPassingVerdict,
   redactSecrets,
   type TrialResult,
   type TrialSummary,
@@ -71,11 +72,10 @@ function loadAllScenarios(scenariosDirOverride?: string): Map<string, Scenario> 
   return merged;
 }
 
-const WALL_CLOCK_CAP_MS = 150_000;
-const DEFAULT_BUDGET_USD = 1.0;
-const DEFAULT_MODEL_UPSTREAM = "https://api.anthropic.com";
-const STEP_CAP = 20;
-const MAX_RETRIES = 5;
+export const WALL_CLOCK_CAP_MS = 150_000;
+export const DEFAULT_BUDGET_USD = 1.0;
+export const STEP_CAP = 20;
+export const MAX_RETRIES = 5;
 
 function correspondingToolCall(trace: RunEvent[], result: RunEvent): RunEvent | undefined {
   if (result.kind !== "tool_result") return undefined;
@@ -178,7 +178,8 @@ export interface SingleTrialInput {
   agentCmd: string;
   agentArgs: string[];
   budgetUsd: number;
-  modelUpstream: string;
+  /** Explicit upstream override. Leave unset to let the proxy route each request to the real host matching its detected provider. */
+  modelUpstream?: string;
   wallClockCapMs: number;
   stepCap: number;
   maxRetries: number;
@@ -244,7 +245,13 @@ export async function runSingleTrial(input: SingleTrialInput): Promise<TrialResu
   };
   writeFileSync(configPath, JSON.stringify(mcpConfig, null, 2));
 
-  const modelProxy = await startModelProxy({ upstream: modelUpstream, budgetUsd, tracePath, cache });
+  const modelProxy = await startModelProxy({
+    upstream: modelUpstream,
+    budgetUsd,
+    tracePath,
+    cache,
+    extraSecrets: canary ? [canary.secret] : [],
+  });
 
   const agentEnv = {
     ...process.env,
@@ -256,19 +263,56 @@ export async function runSingleTrial(input: SingleTrialInput): Promise<TrialResu
   };
 
   let killedByHarness = false;
-  const exitCode = await new Promise<number>((resolve) => {
-    const child = spawn(agentCmd, agentArgs, { env: agentEnv, stdio: "inherit" });
-    const killTimer = setTimeout(() => {
-      killedByHarness = true;
-      child.kill("SIGKILL");
-    }, wallClockCapMs);
-    child.on("exit", (code) => {
-      clearTimeout(killTimer);
-      resolve(code ?? 1);
-    });
-  });
+  const stderrChunks: Buffer[] = [];
+  let exitCode: number;
+  try {
+    exitCode = await new Promise<number>((resolve, reject) => {
+      // stdin is piped (not inherited) so the run never blocks on a real terminal:
+      // the scenario's task prompt (if any) is written and stdin is closed
+      // immediately after, which acts as a fallback for agents that read the task
+      // from stdin rather than from CHAOSLINE_DEMO_TASK_PROMPT. stderr is piped so
+      // it can be captured for the failure summary, then forwarded live to the
+      // harness's own stderr so nothing is lost from the terminal.
+      const child = spawn(agentCmd, agentArgs, { env: agentEnv, stdio: ["pipe", "inherit", "pipe"] });
 
-  await modelProxy.close();
+      const killTimer = setTimeout(() => {
+        killedByHarness = true;
+        child.kill("SIGKILL");
+      }, wallClockCapMs);
+
+      child.on("error", (err) => {
+        clearTimeout(killTimer);
+        reject(new Error(`could not start agent command "${agentCmd}": ${err.message}`));
+      });
+
+      child.stderr.on("data", (chunk: Buffer) => {
+        stderrChunks.push(chunk);
+        process.stderr.write(chunk);
+      });
+
+      if (demoTaskPrompt) {
+        child.stdin.write(`${demoTaskPrompt}\n`);
+      }
+      child.stdin.end();
+
+      child.on("exit", (code) => {
+        clearTimeout(killTimer);
+        resolve(code ?? 1);
+      });
+    });
+  } finally {
+    await modelProxy.close();
+  }
+
+  const stderrText = Buffer.concat(stderrChunks).toString("utf8");
+  if (stderrText) {
+    writeFileSync(`${runDir}/agent.stderr.log`, stderrText);
+  }
+  const stderrTail = stderrText
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .pop();
 
   const trace: RunEvent[] = readTrace(tracePath);
   const exitEvent: RunEvent = {
@@ -277,7 +321,7 @@ export async function runSingleTrial(input: SingleTrialInput): Promise<TrialResu
     code: exitCode,
     reason: exitCode === 0 ? "exit" : "nonzero_exit",
   };
-  new TraceWriter(tracePath).write(exitEvent);
+  new TraceWriter(tracePath, canary ? [canary.secret] : []).write(exitEvent);
   trace.push(exitEvent);
 
   let worldSnapshot: unknown[] = [];
@@ -309,6 +353,8 @@ export async function runSingleTrial(input: SingleTrialInput): Promise<TrialResu
     // necessarily a payments ledger.
     ledgerPath: snapshotPath,
     fired: resolved.fired,
+    exitCode,
+    stderrTail,
   };
 }
 
@@ -322,7 +368,7 @@ async function runOneScenario(
     criticalTolerance: number;
     noBaseline: boolean;
     budgetUsd: number;
-    modelUpstream: string;
+    modelUpstream?: string;
     cache: ResponseCache;
   }
 ): Promise<{ shouldFail: boolean; scenarioInput: ScenarioInput }> {
@@ -361,10 +407,22 @@ async function runOneScenario(
     baselineVerdict = baselineResult.verdict;
     baselineTracePath = baselineResult.tracePath;
     console.log(`baseline verdict: ${baselineVerdict}`);
+    if (baselineResult.stderrTail) {
+      console.log(`baseline agent stderr: ${baselineResult.stderrTail}`);
+    }
 
-    if (isCritical(baselineVerdict)) {
-      console.log(`\nbaseline failed with critical verdict — scenario is INVALID`);
+    // Not just isCritical: a baseline that never surfaced any output at all
+    // (agent crashed, hung past the wall-clock cap, or errored before its first
+    // tool call — UNSAFE_FAILURE with no completion) is just as unmeasurable as
+    // a critical baseline. Faults can't be evaluated against a baseline that
+    // never worked in the first place, so both cases abort before trials run.
+    if (isCritical(baselineVerdict) || baselineVerdict === "UNSAFE_FAILURE") {
+      console.log(`\nbaseline failed (${baselineVerdict}) — scenario is INVALID`);
       console.log(`verdict: INVALID — agent cannot complete task without faults`);
+      if (baselineResult.stderrTail) {
+        console.log(`likely cause: ${baselineResult.stderrTail}`);
+      }
+      console.log(`Faults cannot be measured against a baseline that did not work; skipping all ${nTrials} trials.`);
       const invalidSummary: TrialSummary = summarizeTrials(scenarioId, [], baselineVerdict, criticalTolerance);
       return {
         shouldFail: true,
@@ -372,6 +430,8 @@ async function runOneScenario(
       };
     }
   }
+
+  let previousSignature: string | undefined;
 
   for (let i = 0; i < nTrials; i++) {
     console.log(`\nchaosline: trial ${i + 1}/${nTrials}`);
@@ -398,6 +458,30 @@ async function runOneScenario(
     });
     results.push(result);
     console.log(`trial ${i + 1} verdict: ${result.verdict}`);
+    if (result.stderrTail) {
+      console.log(`trial ${i + 1} agent stderr: ${result.stderrTail}`);
+    }
+
+    // Two consecutive non-passing trials with the same verdict, exit code, and
+    // stderr tail are the same failure repeated, not independent fault-tolerance
+    // signal — most often a configuration problem (bad API key, agent never
+    // starts) rather than anything scenario-specific. Stop burning trials/budget
+    // on a repeat once it's been seen twice.
+    if (!isPassingVerdict(result.verdict)) {
+      const signature = `${result.verdict}|${result.exitCode}|${result.stderrTail ?? ""}`;
+      if (signature === previousSignature) {
+        console.log(
+          `\nchaosline: trials ${i} and ${i + 1} failed identically (${result.verdict}, exit ${result.exitCode}` +
+            (result.stderrTail ? `, "${result.stderrTail}"` : "") +
+            `).`
+        );
+        console.log(`This looks like a configuration failure, not a fault-tolerance signal. Aborting remaining trials.`);
+        break;
+      }
+      previousSignature = signature;
+    } else {
+      previousSignature = undefined;
+    }
   }
 
   const summary = summarizeTrials(scenarioId, results, baselineVerdict, criticalTolerance);
@@ -479,12 +563,15 @@ export async function runCommand(args: string[]): Promise<void> {
   const tagIdx = args.indexOf("--tag");
   const tag = tagIdx !== -1 ? (args[tagIdx + 1] as ScenarioTag) : undefined;
 
-  if (scenarioId && tag) {
-    console.error("chaosline run: --scenario and --tag are mutually exclusive");
+  const worldIdx = args.indexOf("--world");
+  const world = worldIdx !== -1 ? (args[worldIdx + 1] as WorldKey) : undefined;
+
+  if (scenarioId && (tag || world)) {
+    console.error("chaosline run: --scenario can't be combined with --tag or --world");
     process.exit(2);
   }
-  if (!scenarioId && !tag) {
-    console.error("chaosline run: missing --scenario <name> or --tag <smoke|full|critical>");
+  if (!scenarioId && !tag && !world) {
+    console.error("chaosline run: missing --scenario <name>, --tag <smoke|full|critical>, or --world <world>");
     process.exit(2);
   }
 
@@ -511,9 +598,13 @@ export async function runCommand(args: string[]): Promise<void> {
     }
     scenarioIds = [scenarioId];
   } else {
-    scenarioIds = [...scenarios.values()].filter((s) => s.tags.includes(tag!)).map((s) => s.id);
+    scenarioIds = [...scenarios.values()]
+      .filter((s) => !tag || s.tags.includes(tag))
+      .filter((s) => !world || s.world === world)
+      .map((s) => s.id);
     if (scenarioIds.length === 0) {
-      console.error(`chaosline run: no scenario tagged "${tag}"`);
+      const filterDesc = [tag ? `tag "${tag}"` : undefined, world ? `world "${world}"` : undefined].filter(Boolean).join(" and ");
+      console.error(`chaosline run: no scenario matched ${filterDesc}`);
       process.exit(2);
     }
   }
@@ -547,14 +638,22 @@ export async function runCommand(args: string[]): Promise<void> {
   const reportDir = reportDirIdx !== -1 ? args[reportDirIdx + 1] : undefined;
 
   const budgetUsd = Number(process.env.CHAOSLINE_BUDGET_USD ?? DEFAULT_BUDGET_USD);
-  const modelUpstream = process.env.CHAOSLINE_MODEL_UPSTREAM ?? DEFAULT_MODEL_UPSTREAM;
+
+  // Explicit override only. Left unset, the model proxy routes each request to
+  // the real host matching its detected provider (Anthropic calls to
+  // api.anthropic.com, OpenAI calls to api.openai.com), so an OpenAI-only agent
+  // doesn't get forwarded to Anthropic's API just because that's the historical
+  // default. Set this to point everything at one host instead (e.g. a local mock).
+  const modelUpstreamIdx = args.indexOf("--model-upstream");
+  const modelUpstream = modelUpstreamIdx !== -1 ? args[modelUpstreamIdx + 1] : process.env.CHAOSLINE_MODEL_UPSTREAM;
 
   const cache = new ResponseCache();
   const outcomes: Array<{ scenarioId: string; shouldFail: boolean }> = [];
   const scenarioInputs: ScenarioInput[] = [];
 
+  const filterDesc = [tag ? `tag "${tag}"` : undefined, world ? `world "${world}"` : undefined].filter(Boolean).join(" and ");
   if (scenarioIds.length > 1) {
-    console.log(`chaosline: running ${scenarioIds.length} scenarios tagged "${tag}"`);
+    console.log(`chaosline: running ${scenarioIds.length} scenarios matching ${filterDesc}`);
   }
 
   for (const id of scenarioIds) {
@@ -575,7 +674,7 @@ export async function runCommand(args: string[]): Promise<void> {
 
   if (scenarioIds.length > 1) {
     console.log(`\n${"=".repeat(60)}`);
-    console.log(`SUITE SUMMARY (tag=${tag})`);
+    console.log(`SUITE SUMMARY (${filterDesc})`);
     for (const o of outcomes) {
       console.log(`  ${o.scenarioId.padEnd(32)} ${o.shouldFail ? "FAIL" : "PASS"}`);
     }

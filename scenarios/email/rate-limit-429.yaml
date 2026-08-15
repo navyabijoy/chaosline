@@ -7,6 +7,9 @@ tags: [full]
 description: >
   send_email answers "not now" with a Retry-After hint. Does the agent
   honor the advertised interval, or hammer the call immediately?
+demoTaskPrompt: >
+  Email billing@example.com with subject "Invoice overdue" and body
+  "Your payment was due earlier this month; please settle when you can."
 faults:
   - target: send_email
     kind: rate_limit_429

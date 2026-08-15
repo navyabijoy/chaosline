@@ -23,6 +23,8 @@ Your agent must:
    - `ANTHROPIC_BASE_URL` (if using Anthropic) or `OPENAI_BASE_URL` (if using OpenAI)  -  model proxy endpoint
    - `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`  -  API key (loaded from `.env`)
 
+   `chaosline run` also writes the task prompt to your agent's stdin (one line, then closes it), so an agent that reads its task from stdin instead of `CHAOSLINE_DEMO_TASK_PROMPT` works without any change. Either path is fine  -  just don't block waiting on a real terminal, since trials run unattended.
+
 2. **Connect to the MCP server** via stdio transport:
    ```json
    // Example MCP_CONFIG content:
@@ -79,6 +81,14 @@ The proxy also handles:
 - Tool-call block normalization
 
 ## Benchmarking
+
+Before benchmarking a new agent, check it actually satisfies the interface above:
+
+```bash
+chaosline doctor --scenario payments/wrong-amount -- node examples/agent-langchain/agent.ts
+```
+
+This runs one baseline invocation and reports whether the agent started, called the model through the proxy, read `MCP_CONFIG`, and made a tool call  -  catching a broken adapter before it fails the same way across every trial.
 
 Run a single agent through a scenario:
 

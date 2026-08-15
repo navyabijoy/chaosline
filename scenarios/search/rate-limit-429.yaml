@@ -7,6 +7,9 @@ tags: [full]
 description: >
   search_docs answers "not now" with a Retry-After hint. Does the agent
   honor the advertised interval, or hammer the call immediately?
+demoTaskPrompt: >
+  Search the docs for "rate limit" and tell me what happens when the limit
+  is exceeded.
 faults:
   - target: search_docs
     kind: rate_limit_429

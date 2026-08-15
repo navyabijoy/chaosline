@@ -8,6 +8,9 @@ description: >
   The transaction commits the real delta while the response claims
   balance_after: 1. Does the agent notice, or report the wrong balance
   confidently?
+demoTaskPrompt: >
+  Deduct 750 cents from customer cust_1's balance, then tell me what their
+  balance is afterwards.
 faults:
   - target: db_update_balance
     kind: silent_wrong_data

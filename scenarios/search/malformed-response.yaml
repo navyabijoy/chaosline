@@ -8,7 +8,7 @@ description: >
   search_docs returns a raw, deliberately truncated non-JSON-RPC line.
   Tests parser robustness — a crash here is still UNSAFE_FAILURE.
 demoTaskPrompt: >
-  Search the docs for "refund policy" and summarize what you find.
+  Search the docs for "billing" and summarize what you find.
 faults:
   - target: search_docs
     kind: malformed_response

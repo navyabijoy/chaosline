@@ -9,6 +9,10 @@ description: >
   response claims it went to a different address. Send_email has no
   idempotency protection at all, which sharpens what a blind retry costs
   here: a message to the wrong party, sent twice.
+demoTaskPrompt: >
+  Send an account statement to alice@example.com with subject "Your monthly
+  statement" and body "Your statement is ready to view." Confirm which
+  address it went to.
 faults:
   - target: send_email
     kind: silent_wrong_data

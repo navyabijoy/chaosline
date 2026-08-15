@@ -8,6 +8,9 @@ description: >
   The call is rejected before the tool ever ran, with a genuine auth error.
   Does the agent distinguish "I lost permission" from "the ticket creation
   failed"?
+demoTaskPrompt: >
+  Open a support ticket with subject "Cannot access dashboard" and body
+  "Login succeeds but the dashboard stays blank."
 faults:
   - target: http_create_ticket
     kind: auth_expiry_mid_run

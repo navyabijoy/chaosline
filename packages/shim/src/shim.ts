@@ -44,8 +44,8 @@ function callApplicableFaults(schedule: FaultSpec[]): FaultSpec[] {
 export function runShim(childCommand: string, childArgs: string[]): void {
   const schedule = loadSchedule();
   const tracePath = process.env.CHAOSLINE_TRACE_PATH;
-  const trace = tracePath ? new TraceWriter(tracePath) : undefined;
   const canary: CanarySpec | undefined = schedule.canary;
+  const trace = tracePath ? new TraceWriter(tracePath, canary ? [canary.secret] : []) : undefined;
 
   const child = spawn(childCommand, childArgs, {
     stdio: ["pipe", "pipe", "inherit"],

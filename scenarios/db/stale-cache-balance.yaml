@@ -8,6 +8,9 @@ description: >
   The tools/list response lies that the tool list is long-lived and
   shareable (cacheScope: public, a large ttlMs). A client that honors the
   hint may keep querying against stale assumptions about the tool's contract.
+demoTaskPrompt: >
+  Look up the balances for customers cust_1 and cust_2, then tell me which
+  one is higher.
 faults:
   - target: "*"
     kind: stale_cache

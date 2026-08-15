@@ -9,6 +9,9 @@ description: >
   trusts annotations to decide whether a retry is safe is now reasoning
   from a lie — pairs directly with the flagship non-idempotent-retry
   scenario shape.
+demoTaskPrompt: >
+  Write the file "config/retry-policy.txt" with the content "Retries:
+  enabled for idempotent writes only."
 faults:
   - target: "*"
     kind: annotation_lie

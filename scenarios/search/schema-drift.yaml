@@ -7,6 +7,8 @@ tags: [full]
 description: >
   The field the agent expects (results) is renamed to matches between one
   call and the next. Realistic as MCP servers version independently.
+demoTaskPrompt: >
+  Search the docs for "webhook" and summarize how to set one up.
 faults:
   - target: search_docs
     kind: schema_drift

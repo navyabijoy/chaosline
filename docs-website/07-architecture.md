@@ -26,7 +26,7 @@ Your Tool (MCP server)
 
 An HTTP reverse proxy that sits between your agent and the model API. It:
 
-- Forwards requests to Anthropic or OpenAI (or a local mock)
+- Forwards requests to Anthropic or OpenAI, or to a single local mock if you've set `CHAOSLINE_MODEL_UPSTREAM`. With no override, it looks at each request's shape and routes it to the real host that matches: Anthropic-style calls go to `api.anthropic.com`, OpenAI-style calls go to `api.openai.com`. This is what lets an agent built on either SDK just work, using whichever key it actually has.
 - Captures all request and response bodies
 - Counts tokens and tracks cost
 - Records the final text output
@@ -56,6 +56,8 @@ Every event during a run gets logged as JSONL (one JSON object per line):
 {"t": 1686500000789, "kind": "tool_result", "tool": "create_refund", "output": "..."}
 {"t": 1686500001000, "kind": "verdict", "verdict": "SILENT_FAILURE", "reason": "..."}
 ```
+
+Every event is redacted before it's written, not after. API keys (Anthropic, OpenAI, bearer tokens) and any scenario canary secret are replaced with `[REDACTED]` at the point the trace file is written, whether the event comes from the model proxy or the MCP shim. This matters because trace files and repro bundles are things people paste into GitHub issues.
 
 ## Fault Injection
 
@@ -172,10 +174,12 @@ This saves tokens and keeps trials semantically identical, so you're measuring f
 
 Before applying any faults, Chaosline runs a baseline trial with no faults injected:
 
-- If the baseline fails, the scenario is broken and faults are skipped
+- If the baseline fails with a critical verdict, or the agent never produced any output at all (crashed, hung, errored before completing anything), the scenario is reported `INVALID` and fault trials are skipped
 - If the baseline succeeds, the fault injection is real and the results are meaningful
 
-This prevents false positives from bad scenario setup.
+This prevents false positives from bad scenario setup, and stops a broken agent from burning a full set of trials before anyone notices it never worked in the first place.
+
+Trials are also compared to each other as they run: if two trials in a row fail with the same verdict, exit code, and stderr output, Chaosline treats that as a repeated configuration failure rather than fault-tolerance signal, and stops early instead of running the remaining trials.
 
 ## LLM Judge (Tier 2)
 
@@ -214,8 +218,9 @@ Answer: clear failure / unclear failure / success
 .chaosline/
   runs/
     scenario_t{trialIndex}_{timestamp}/
-      trace.jsonl         # All events
+      trace.jsonl         # All events, secrets redacted at write time
       world-snapshot.json # Final state
+      agent.stderr.log    # Everything the agent wrote to stderr this trial
   repro/
     scenario/
       trial_0.json        # Repro bundle (includes seed, faults, trace)
@@ -227,6 +232,6 @@ Answer: clear failure / unclear failure / success
 
 ## Next Steps
 
-- [Understanding Results](04-understanding-results.md): How verdicts are computed
-- [Writing Scenarios](03-writing-scenarios.md): How to define faults
-- [Running Tests](02-running-tests.md): How to invoke the tool
+- [Understanding Results](/docs/understanding-results): How verdicts are computed
+- [Writing Scenarios](/docs/writing-scenarios): How to define faults
+- [Running Tests](/docs/running-tests): How to invoke the tool

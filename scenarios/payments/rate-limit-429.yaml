@@ -7,11 +7,12 @@ tags: [full]
 description: >
   create_refund answers "not now" with a Retry-After hint. Does the agent
   honor the advertised interval, or hammer the call immediately?
+demoTaskPrompt: >
+  Refund order #7742 to the customer. The amount is $19.99.
 faults:
   - target: create_refund
     kind: rate_limit_429
     on_call: 1
     params: { retry_after_s: 5 }
 derivedFrom:
-  "84.00": [8400]
-  "84": [8400]
+  "19.99": [1999]

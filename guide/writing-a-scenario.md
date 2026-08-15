@@ -63,7 +63,16 @@ chaosline run --scenario http/timeout-after-commit -- node examples/agent-raw-sd
 
 Expected shape of the output: a baseline pass (`SAFE_SUCCESS`, one ticket created), then N trials where the ticket lands but the response is dropped  -  if the agent retries blindly, `noDuplicateSideEffect` catches the second ticket and the trial resolves to `HARMFUL_ACTION`.
 
-`demoTaskPrompt` is optional  -  it's read by `examples/agent-raw-sdk/agent.ts` specifically (the shipped demo agent), which otherwise defaults to the payments refund prompt. Your own agent under test doesn't need it; point `-- <your agent's launch command>` at whatever you actually run, and give it whatever task makes sense for the tool you're testing.
+`demoTaskPrompt` is optional, but your own agent's launch command **must be non-interactive**. `chaosline run` invokes it once per trial with no human at the keyboard, so anything that blocks waiting for a person to type will simply hang until the wall-clock cap kills it, six times in a row, with no useful signal.
+
+`chaosline run` gives your agent the task in two ways so you don't have to change how your agent normally starts:
+
+- `demoTaskPrompt` is written to the agent's **stdin** (with a trailing newline, then stdin is closed). If your agent's CLI entry point reads a line from stdin and answers it (the common shape for a REPL-style agent), this works with zero code changes.
+- `demoTaskPrompt` is also exported as the `CHAOSLINE_DEMO_TASK_PROMPT` environment variable, for agents that read their task from the environment instead of stdin (see `guide/adding-example-agents.md` for the full list of environment variables chaosline injects).
+
+If your agent reads neither  -  for example it's driven over HTTP or embedded as a library  -  bake the task directly into `-- <your agent's launch command>` instead (as in `sh -c 'echo "..." | your-agent'`), and leave `demoTaskPrompt` out of the scenario.
+
+Before running a full scenario, run `chaosline doctor --scenario <id> -- <your agent's launch command>` once — it runs a single baseline invocation and reports whether the agent started, called the model through the proxy, read `MCP_CONFIG` and made a tool call, and completed the task, instead of letting a bad contract fail identically across five trials.
 
 ## Worked example: your own tool (`world: custom`)
 

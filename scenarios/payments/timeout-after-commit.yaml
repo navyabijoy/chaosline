@@ -7,6 +7,8 @@ tags: [smoke, full, critical]
 description: >
   The refund lands in the ledger, then the response is lost. Reproduces the
   Phase 0 double-charge finding (docs/phase-0-results.md).
+demoTaskPrompt: >
+  Refund order #4471 to the customer. The amount is $84.00.
 faults:
   - target: create_refund
     kind: timeout_after_commit

@@ -10,11 +10,22 @@ import { costUsd, type TokenUsage } from "./pricing.ts";
 import { ResponseCache, type CachedResponse } from "./response-cache.ts";
 
 export interface ModelProxyOptions {
-  upstream: string;
+  /**
+   * Explicit upstream override — every request goes here regardless of
+   * detected provider. Meant for pointing both Anthropic- and OpenAI-shaped
+   * traffic at one local mock during a benchmark/demo. Leave unset for real
+   * runs: the proxy then routes each request to the real host matching its
+   * detected provider (Anthropic calls to api.anthropic.com, OpenAI calls to
+   * api.openai.com), so an OpenAI-only agent never gets forwarded to
+   * Anthropic's API and rejected there for the wrong kind of key.
+   */
+  upstream?: string;
   budgetUsd: number;
   tracePath?: string;
   port?: number;
   cache?: ResponseCache;
+  /** Scenario-specific secrets (e.g. a canary value) to redact from the trace, in addition to the built-in API-key patterns. */
+  extraSecrets?: string[];
 }
 
 export interface ModelProxyHandle {
@@ -47,6 +58,16 @@ function detectProvider(url: string): Provider | undefined {
   if (url.startsWith("/v1/chat/completions") || url.startsWith("/chat/completions")) return "openai";
   return undefined;
 }
+
+// Real hosts used when the caller didn't pin an explicit upstream. Keyed by
+// detected provider so an agent using the OpenAI SDK gets routed to OpenAI
+// even though ANTHROPIC_BASE_URL and OPENAI_BASE_URL both point at this same
+// proxy process — the proxy tells them apart by request shape, not by which
+// env var the agent happened to read.
+export const DEFAULT_UPSTREAM_BY_PROVIDER: Record<Provider, string> = {
+  anthropic: "https://api.anthropic.com",
+  openai: "https://api.openai.com",
+};
 
 const HOP_BY_HOP_REQUEST_HEADERS = new Set([
   "connection",
@@ -116,7 +137,7 @@ function openAiUsageToUsage(usage: { prompt_tokens?: number; completion_tokens?:
 }
 
 export async function startModelProxy(opts: ModelProxyOptions): Promise<ModelProxyHandle> {
-  const trace = opts.tracePath ? new TraceWriter(opts.tracePath) : undefined;
+  const trace = opts.tracePath ? new TraceWriter(opts.tracePath, opts.extraSecrets ?? []) : undefined;
   let totalCostUsd = 0;
 
   const server = createServer((req, res) => {
@@ -181,7 +202,8 @@ export async function startModelProxy(opts: ModelProxyOptions): Promise<ModelPro
       }
     }
 
-    const upstreamUrl = joinUpstreamUrl(opts.upstream, req.url ?? "/");
+    const upstreamBase = opts.upstream ?? DEFAULT_UPSTREAM_BY_PROVIDER[provider ?? "anthropic"];
+    const upstreamUrl = joinUpstreamUrl(upstreamBase, req.url ?? "/");
     const headers = new Headers();
     for (const [key, value] of Object.entries(req.headers)) {
       if (!value) continue;

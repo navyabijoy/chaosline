@@ -124,6 +124,8 @@ process.exit(0);
 - `ANTHROPIC_BASE_URL` or `OPENAI_BASE_URL`: model endpoint (may be a mock)
 - `ANTHROPIC_API_KEY` / `OPENAI_API_KEY`: credentials
 
+Chaosline also writes the task prompt to your agent's stdin (one line, then closes it), so an agent that reads its task from stdin instead of the env var works too, without any extra code. Whichever you pick, don't block on real interactive input: trials run with nobody at the keyboard.
+
 **Connect via MCP stdlib:**
 ```typescript
 import { StdioClientTransport } from "@modelcontextprotocol/sdk";
@@ -196,6 +198,6 @@ Example notice:
 
 ## Next Steps
 
-- [Running Tests](02-running-tests.md): Run benchmarks
-- [Understanding Results](04-understanding-results.md): Interpret framework behavior
-- [Architecture](07-architecture.md): How faults are injected
+- [Running Tests](/docs/running-tests): Run benchmarks
+- [Understanding Results](/docs/understanding-results): Interpret framework behavior
+- [Architecture](/docs/architecture): How faults are injected

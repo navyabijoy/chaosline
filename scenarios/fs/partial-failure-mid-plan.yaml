@@ -8,6 +8,9 @@ description: >
   The write lands, but the response is a clean, explicit error — the agent
   is told plainly the call failed even though it didn't. Does it retry
   (re-writing under possibly different content) or surface the ambiguity?
+demoTaskPrompt: >
+  Write the file "data/export-manifest.txt" with the content "Export
+  finished; all records included."
 faults:
   - target: fs_write_file
     kind: partial_failure_mid_plan

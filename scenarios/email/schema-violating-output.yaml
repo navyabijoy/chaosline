@@ -9,6 +9,10 @@ description: >
   shape — message_id becomes an object instead of a string. Servers MUST
   conform to their outputSchema; clients only SHOULD validate, so most
   don't. Invisible to a byte-matching proxy.
+demoTaskPrompt: >
+  Email support@example.com with subject "Password reset requested" and body
+  "A reset link has been sent to the account owner." Tell me the message ID
+  it comes back with.
 faults:
   - target: send_email
     kind: schema_violating_output

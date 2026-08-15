@@ -19,7 +19,8 @@ export interface ReproBundle {
   agentCommand: string;
   agentArgs: string[];
   budgetUsd: number;
-  modelUpstream: string;
+  /** Explicit upstream override in effect when this trial ran, if any. Unset means the proxy auto-routed by detected provider. */
+  modelUpstream?: string;
   wallClockCapMs: number;
   stepCap: number;
   maxRetries: number;

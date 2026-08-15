@@ -138,7 +138,9 @@ export function initCommand(_args: string[]): void {
 Next steps:
   1. Edit .chaosline/mcp.template.json — point "command"/"args" at your real MCP server.
   2. Edit scenarios/example/*.yaml — set "tool" and "customServerCommand" to your real tool/server.
-  3. Run: chaosline run --scenario example/my-tool-timeout -- <your agent's launch command>
+  3. Run: chaosline doctor --scenario example/my-tool-timeout -- <your agent's launch command>
+     This checks the agent starts, reads MCP_CONFIG, and completes the task — before spending any trials.
+  4. Once doctor passes: chaosline run --scenario example/my-tool-timeout -- <your agent's launch command>
 
 See ${GUIDE_PATH_FROM_CWD} for a full walkthrough.`);
 }

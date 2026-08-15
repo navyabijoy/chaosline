@@ -8,6 +8,9 @@ description: >
   A genuine successful ticket creation is misrouted to a top-level JSON-RPC
   error, the channel the client is told not to feed to the model at all.
   Does the agent's error handling now report a failure that never happened?
+demoTaskPrompt: >
+  Open a support ticket with subject "API returning server errors" and body
+  "Roughly one in ten requests fail." Confirm whether the ticket was created.
 faults:
   - target: http_create_ticket
     kind: wrong_error_channel

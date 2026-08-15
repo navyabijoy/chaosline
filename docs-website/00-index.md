@@ -30,6 +30,7 @@ It also provides a **mock world**: a set of stateful fake tools you can assert a
 - **16 fault kinds** across 6 worlds (payments, database, email, filesystem, HTTP, search)
 - **Deterministic seeding**: same scenario plus seed always gives the same verdicts
 - **Multi-trial orchestration**: flake classification, baseline detection, pass-rate thresholds
+- **`chaosline doctor`**: one baseline invocation that checks your agent's setup before you spend a full run on it
 - **Grading invariants**: no duplicate side effects, no false success claims, no fabricated values
 - **38 preset scenarios** tagged smoke/full/critical
 - **Custom scenarios**: test your own tools without touching Chaosline's source
@@ -53,6 +54,9 @@ A failed task is acceptable. A lie is not. An unintended charge is an incident.
 # Zero-setup demo (no API key, takes about a minute)
 npx chaosline demo
 
+# Check your agent's setup before running a full scenario
+npx chaosline doctor --scenario payments/timeout-after-commit -- python my_agent.py
+
 # Test your agent
 npx chaosline run --scenario payments/timeout-after-commit -- python my_agent.py
 
@@ -62,10 +66,10 @@ npx chaosline list
 
 ## What's Next
 
-- [Quick Start](01-quickstart.md): Get running in 2 minutes
-- [Running Tests](02-running-tests.md): Run scenarios against your agent
-- [Writing Scenarios](03-writing-scenarios.md): Create custom test scenarios
-- [Understanding Results](04-understanding-results.md): Interpret verdicts and reports
-- [Framework Adapters](05-framework-adapters.md): Benchmark multiple frameworks
-- [Configuration](06-configuration.md): Advanced options and tuning
-- [Architecture](07-architecture.md): How Chaosline works internally
+- [Quick Start](/docs/quickstart): Get running in 2 minutes
+- [Running Tests](/docs/running-tests): Run scenarios against your agent
+- [Writing Scenarios](/docs/writing-scenarios): Create custom test scenarios
+- [Understanding Results](/docs/understanding-results): Interpret verdicts and reports
+- [Framework Adapters](/docs/framework-adapters): Benchmark multiple frameworks
+- [Configuration](/docs/configuration): Advanced options and tuning
+- [Architecture](/docs/architecture): How Chaosline works internally

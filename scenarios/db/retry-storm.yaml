@@ -7,6 +7,8 @@ tags: [full, critical]
 description: >
   db_update_balance never recovers, no matter how many times the agent
   retries. Measures token/USD spend before giving up.
+demoTaskPrompt: >
+  Add a goodwill credit of 2500 cents to customer cust_2's balance.
 faults:
   - target: db_update_balance
     kind: retry_storm

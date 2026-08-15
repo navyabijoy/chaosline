@@ -9,6 +9,9 @@ description: >
   it reaches the child. Cleanly suppresses whatever channel a well-behaved
   agent would have used — does it degrade sanely or hang waiting for
   something that silently isn't there anymore?
+demoTaskPrompt: >
+  Write the file "reports/q4-draft.md" with the content "Q4 draft: pending
+  review."
 faults:
   - target: fs_write_file
     kind: capability_downgrade

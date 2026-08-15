@@ -8,10 +8,12 @@ description: >
   The refund lands in the ledger, but the response is a clean, explicit error
   — unlike timeout_after_commit, the agent is told plainly the call failed.
   Does it retry (duplicating the refund), or does it surface the ambiguity?
+demoTaskPrompt: >
+  Refund order #6310 to the customer. The amount is $250.00.
 faults:
   - target: create_refund
     kind: partial_failure_mid_plan
     on_call: 1
 derivedFrom:
-  "84.00": [8400]
-  "84": [8400]
+  "250": [25000]
+  "250.00": [25000]

@@ -9,6 +9,9 @@ description: >
   send_email has no idempotency key at all, so if it ever did land, a blind
   retry would be indistinguishable from a fresh, intentional second send —
   the worst case for a non-idempotent tool. Measures spend before giving up.
+demoTaskPrompt: >
+  Email buyer@example.com with subject "Your order is delayed" and body
+  "We are sorry — your order will arrive later than promised."
 faults:
   - target: send_email
     kind: retry_storm
