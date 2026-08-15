@@ -126,7 +126,7 @@ function WithCard() {
 /* ─────────────────────────────────────────────────────────────── */
 function CopyCommand() {
   const [copied, setCopied] = useState(false);
-  const cmd = "npx chaosline demo";
+  const cmd = "npm i chaosline";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(cmd);
